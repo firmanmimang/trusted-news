@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .news-body a[href] {
+    @apply text-blue-700 transition duration-200 hover:text-blue-800 dark:text-blue-600 dark:hover:text-blue-700;
+  }
+
+  .news-body img {
+    @apply max-w-[100%];
+  }
+  
+  .input {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all .5s ease-in-out;
+  }
+  
+  .input::placeholder {
+    color: transparent;
+  }
+  
+  .input:focus::placeholder {
+    color: rgb(131, 128, 128);
+  }
+  
+  .input:focus,.input:not(:placeholder-shown) {
+    background-color: #fff;
+    border: 1px solid rgb(91, 107, 255);
+    width: 290px;
+    padding: 18px 16px 18px 45px;
+  }
+  
+  .icon {
+    position: absolute;
+    left: 0;
+    height: 45px;
+    width: 45px;
+    border-radius: 99px;
+    z-index: 10;
+    border-radius: 50%;
+    fill: rgb(91, 107, 255);
+    border: 1px solid rgb(91, 107, 255);
+  }
+  
+  .input:focus + .icon,.input:not(:placeholder-shown) + .icon {
+    z-index: 50;
+    border: none;
+  }
+  
+}
+@layer utilities {
+  [x-cloak] {
+    display: none !important;
+  }
+  
+  .pause {
+    animation-play-state: paused;
+  }
+
+  .autofill-text-color::-webkit-input-placeholder {
+    -webkit-text-fill-color: red;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}

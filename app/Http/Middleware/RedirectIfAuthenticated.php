@@ -20,6 +20,10 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
+            if ($guard == "cms" && Auth::guard($guard)->check()) {
+                return redirect(config('cms.path').'/dashboard');
+            }
+            
             if (Auth::guard($guard)->check()) {
                 return redirect(RouteServiceProvider::HOME);
             }
