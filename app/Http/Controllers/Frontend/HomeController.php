@@ -34,7 +34,7 @@ class HomeController extends Controller
         // Auth::logoutCurrentDevice();
         // dd(auth()->user()->hasPermissionTo('comment'));
 
-        $comments = $news->comments()->with('authorRelation')->get();
+        $comments = $news->comments()->with('authorRelation.permissions')->get();
 
         return view('pages.frontend.show', compact(['news', 'comments']));
     }
