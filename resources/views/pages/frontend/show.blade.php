@@ -93,8 +93,21 @@
                 id="{{$index}}"
                 class="relative grid grid-cols-1 gap-2 p-4 mb-8 transition duration-300 bg-white border rounded-lg dark:border-transparent hover:shadow-lg hover:border-gray-400 dark:bg-boxdark"
               >
+                {{-- blur if permission comment revoked --}}
+                @if (!$comment->author()->hasPermissionTo('comment'))
+                  <div class="absolute inset-0 z-10 flex items-center justify-center font-semibold uppercase rounded-lg bg-white/25 backdrop-blur-md text-danger">
+                    Komentar ditangguhkan
+                  </div>
+                @endif
                 <div class="relative flex gap-4">
-                  <img src="{{$comment->authorRelation->imageImage}}" class="relative w-20 h-20 -mb-4 bg-white border rounded-full -top-8" alt="photo profile {{$comment->authorRelation->name}}" loading="lazy">
+                  <div class="relative w-20 h-20 -mb-4 overflow-hidden bg-white border rounded-full -top-8">
+                    {{-- blur if permission comment revoked --}}
+                    @if (!$comment->author()->hasPermissionTo('comment'))
+                      <div class="absolute inset-0 z-10 flex items-center justify-center font-semibold uppercase bg-white/25 backdrop-blur-md">
+                      </div>
+                    @endif
+                    <img src="{{$comment->authorRelation->imageImage}}" class="w-full h-full" alt="photo profile {{$comment->authorRelation->name}}" loading="lazy">
+                  </div>
                   <div class="flex flex-col w-full">
                     <div class="flex flex-row justify-between">
                       <p class="relative overflow-hidden text-xl truncate whitespace-nowrap">{{$comment->authorRelation->name}}</p>
