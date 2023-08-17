@@ -13,5 +13,12 @@ return [
     */
 
     'failed'   => 'Identitas tersebut tidak cocok dengan data kami.',
+    'password' => 'Password yang kamu berikan tidak benar.',
     'throttle' => 'Terlalu banyak usaha masuk. Silahkan coba lagi dalam :seconds detik.',
+
+    'success' => [
+        'login' => 'Halo :user, selamat datang di Trusted News 🎉',
+        'register' => 'Halo :user, terimakasih telah bergabung di Trusted News. 🎉',
+        'logout' => 'Sampai berjumpa kembali. 👋',
+    ]
 ];

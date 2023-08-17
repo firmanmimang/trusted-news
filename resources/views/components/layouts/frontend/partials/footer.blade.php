@@ -1,5 +1,5 @@
 <div class="bg-white border-t border-gray-200 dark:bg-boxdark-2 dark:border-gray-700">
-  <div class="container px-6 py-12 mx-auto">
+  <div class="container px-6 mx-auto">
     <div class="grid grid-cols-1 gap-6 py-10 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
         <div class="sm:col-span-2">
             <h2 class="text-xl font-semibold tracking-tight text-gray-800 xl:text-2xl dark:text-white">Subscribe Trusted News untuk mendapatkan update.</h2>
@@ -52,14 +52,14 @@
         </div>
     </div>
   
-    <hr class="my-6 border-gray-200 md:my-8 dark:border-gray-700">
+    <hr class="border-gray-200 dark:border-gray-700">
   
-    <div class="flex items-center justify-between mt-10">
-        <a href="/">
+    <div class="flex flex-col lg:flex-row gap-4 items-center justify-between py-10">
+        <a href="/" class="font-semibold">
             {{-- <img class="w-auto h-7" src="https://merakiui.com/images/full-logo.svg" alt=""> --}}
             2023 - TRUSTED NEWS | All Right Received
         </a>
-  
+
         <div class="flex -mx-2">
             <a href="#" class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400" aria-label="Reddit">
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none"

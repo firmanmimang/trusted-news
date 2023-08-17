@@ -22,11 +22,6 @@ class RoleSeeder extends Seeder
             "categories management",
 
             "users management",
-
-            "edit profile",
-            "change password",
-
-            "comment",
         ]);
 
         Role::create(['name' => 'author'])->givePermissionTo([

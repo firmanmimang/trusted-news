@@ -17,4 +17,10 @@ return [
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
+    'success' => [
+        'login' => 'Hello :user, welcome to Trusted News. 🎉',
+        'register' => 'Hello :user, thank you for joining Trusted News. 🎉',
+        'logout' => 'You have been successfully logged out. 👋',
+    ]
+
 ];

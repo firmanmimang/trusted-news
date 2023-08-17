@@ -1,4 +1,4 @@
-<x-layouts.frontend.main>
+<x-layouts.frontend.main title="{{$news->title}}">
   <section>
     <div class="w-full overflow-hidden h-150">
         @if ($news->is_crawl)
@@ -43,7 +43,7 @@
         @if ($news->comment_status)
           @auth
             @can(App\Policies\CommentPolicy::CREATE, App\Models\Comment::class)
-              <form novalidate action="{{ route('news.store.comment', $news) }}" method="post" class="w-full px-4 py-2 bg-white rounded-lg dark:bg-boxdark mb-14">
+              <form action="{{ route('news.store.comment', $news) }}" method="post" class="w-full px-4 py-2 bg-gray-100 rounded-lg dark:bg-boxdark mb-14">
                 @csrf
                 <div class="flex flex-wrap mb-6 -mx-3">
                     <h2 class="px-4 pt-3 pb-2 text-lg">Berikan Komentar</h2>
@@ -68,10 +68,15 @@
                 </div>
               </form>
             @endcan
+            @cannot(App\Policies\CommentPolicy::CREATE, App\Models\Comment::class)
+              <div class="flex items-center justify-center w-full px-4 py-4 text-lg text-center bg-gray-100 rounded-lg lg:text-base dark:bg-boxdark mb-14">
+                <span>Komentar akun kamu sedang ditangguhkan, hubungi <a href="{{route('contact')}}" data-turbo-frame="_top" class="dark:text-blue-500 text-primary">Trusted News</a> untuk info lebih lanjut</span>
+              </div>
+            @endcannot
           @endauth
           @guest
-              <div class="flex items-center justify-center w-full h-20 px-4 py-2 bg-white rounded-lg dark:bg-boxdark mb-14">
-                Kamu harus masuk untuk mengirim komentar silahkan&nbsp;<a href="?in={{ urlencode(Request::path()) }}" class="text-meta-5">Login</a>&nbsp;atau&nbsp;<a href="#" class="text-meta-1">Buat Akun</a>&nbsp;Sekarang!
+              <div class="flex items-center justify-center w-full px-4 py-4 text-lg text-center bg-gray-100 rounded-lg lg:text-base dark:bg-boxdark mb-14">
+                <span>Kamu harus masuk untuk mengirim komentar silahkan <br/><a data-turbo-frame="_top" href="/login?in={{ urlencode(Request::path()) }}" class="text-meta-5">Login</a>&nbsp;atau&nbsp;<a data-turbo-frame="_top" href="/register?in={{ urlencode(Request::path()) }}" class="text-meta-1">Buat Akun</a>&nbsp;Sekarang!</span>
               </div>
           @endguest
           @foreach ($comments as $index => $comment)
@@ -83,11 +88,13 @@
                         textInput.focus();
                     }
                 }"
+                @click.away="editComment = false"
+                @keyup.esc="editComment = false"
                 id="{{$index}}"
                 class="relative grid grid-cols-1 gap-2 p-4 mb-8 transition duration-300 bg-white border rounded-lg dark:border-transparent hover:shadow-lg hover:border-gray-400 dark:bg-boxdark"
               >
                 <div class="relative flex gap-4">
-                  <img src="{{$comment->authorRelation->imageImage}}" class="relative w-20 h-20 -mb-4 bg-white border rounded-lg -top-8" alt="photo profile {{$comment->authorRelation->name}}" loading="lazy">
+                  <img src="{{$comment->authorRelation->imageImage}}" class="relative w-20 h-20 -mb-4 bg-white border rounded-full -top-8" alt="photo profile {{$comment->authorRelation->name}}" loading="lazy">
                   <div class="flex flex-col w-full">
                     <div class="flex flex-row justify-between">
                       <p class="relative overflow-hidden text-xl truncate whitespace-nowrap">{{$comment->authorRelation->name}}</p>
@@ -166,11 +173,11 @@
                 <div x-show="!editComment" class="-mt-4">
                   <p  class="whitespace-pre-line">{{$comment->body}}</p>
                   @if (!$comment->created_at->equalTo($comment->updated_at))
-                    <small class="inline-block px-2 py-1 mt-3 text-xs rounded-full bg-meta-4">Edit pada {{$comment->updated_at->diffForHumans()}}</small>  
+                    <small class="inline-block px-2 py-1 mt-3 text-xs text-white rounded-full bg-meta-4">Edited pada {{$comment->updated_at->diffForHumans()}}</small>  
                   @endif
                 </div>
                 <template x-if="editComment">
-                  <form novalidate x-cloak action="{{ route('news.edit.comment', ['news' => $news, 'comment' => $comment]) }}" method="post">
+                  <form x-cloak action="{{ route('news.edit.comment', ['news' => $news, 'comment' => $comment]) }}" method="post">
                     @csrf
                     @method('put')
                     <div class="flex flex-wrap">
@@ -202,7 +209,7 @@
           @endforeach
         @else
           <div class="flex items-center justify-center mt-4 mb-5 border-gray-200 dark:text-whiten border-y dark:border-gray-700">
-            <h5 class="my-5 text-danger">Comment turn off</h5>
+            <h5 class="my-5 font-semibold text-danger">Komentar dimatikan</h5>
           </div>
         @endif
       </div>

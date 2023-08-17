@@ -8,12 +8,12 @@
 </style>
 @endpush
 
-<x-layouts.frontend.main title="Kontak">
+<x-layouts.frontend.main title="Buku Tamu">
   <section class="container py-10 px-6 mx-auto sm:px-12">
-     <div class="relative z-10 flex flex-col items-start mt-8 mb-16 mx-auto w-6/12">
+     <div class="relative z-10 flex flex-col items-start mt-8 mb-16 mx-auto w-full lg:w-6/12">
          <div class="bg-white dark:bg-gray-700 shadow-2xl rounded-xl w-full p-6">
-            <h1 class="text-2xl font-bold text-center pb-4 text-primary">Masukan anda sangat berarti buat kami</h1>
-            <form novalidate action="{{route('guest.store')}}" method="POST">
+            <h1 class="text-2xl font-bold text-center pb-4 text-primary dark:text-white">Masukan anda sangat berarti buat kami</h1>
+            <form action="{{route('guest.store')}}" method="POST">
               @csrf
               <div class="mb-6 flex flex-col gap-1 justify-start items-start">
                 <x-frontend.input value="{{old('nama')}}" type="text" name="nama" placeholder="Masukan nama">

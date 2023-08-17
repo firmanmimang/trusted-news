@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +23,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Vite::useScriptTagAttributes([
+            'data-turbo-track' => 'reload', // Specify a value for the attribute...
+            'async' => true, // Specify an attribute without a value...
+            'integrity' => false, // Exclude an attribute that would otherwise be included...
+        ]);
+         
+        Vite::useStyleTagAttributes([
+            'data-turbo-track' => 'reload',
+        ]);
+        
         if (Schema::hasColumn('categories', 'name')){
             $category = Category::get(['name', 'slug']);
             View::share('categoriesGlobal', $category);

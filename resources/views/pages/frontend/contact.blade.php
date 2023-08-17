@@ -1,8 +1,8 @@
 <x-layouts.frontend.main title="Kontak">
-   <section class="container pt-15 relative flex flex-col-reverse px-6 mx-auto sm:px-12 sm:flex-row">
+   <section class="container pt-8 lg:pt-15 relative flex flex-col-reverse px-6 mx-auto sm:px-12 sm:flex-row">
       {{-- men --}}
       <div class="relative z-10 sm:w-5/12">
-            <svg class="w-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 280.34 335.07">
+            <svg class="w-full md:bottom-0 md:absolute lg:block" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 280.34 335.07">
                <defs>
                   <linearGradient id="linear-gradient" x1="111.49" y1="261.12" x2="145.91" y2="370.59" gradientUnits="userSpaceOnUse">
                      <stop offset="0" stop-color="#2a2839"/><stop offset="1" stop-color="#38435d"/>
@@ -77,10 +77,10 @@
             </svg>
       </div>
       {{-- form --}}
-      <div class="relative z-10 flex flex-col items-start mt-8 mb-16 ml-auto sm:w-5/12 xl:w-4/12 sm:items-end sm:text-right sm:mt-0 xl:pt-20 sm:mb-0">
+      <div class="relative z-10 flex flex-col items-start mt-8 mb-16 lg:mb-10 lg:ml-auto sm:w-5/12 md:w-6/12 md:py-5 lg:w-4/12 sm:items-end sm:text-right sm:mt-0 lg:pt-20 sm:mb-0">
          <div class="bg-white dark:bg-gray-700 shadow-2xl rounded-xl w-full p-6">
             <h1 class="text-2xl font-bold text-center pb-4 text-primary">Kontak Trusted News</h1>
-            <form novalidate action="{{route('contact.store')}}" method="POST">
+            <form action="{{route('contact.store')}}" method="POST">
                @csrf
                <div class="mb-6 flex flex-col gap-1 justify-start items-start">
                   <x-frontend.input value="{{old('nama')}}" type="text" name="nama" placeholder="Masukan nama">

@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'email'=> 'fhidayat131@gmail.com',
             'password'=> bcrypt('password'),
         ])
-        ->assignRole('admin')
+        ->assignRole('super admin')
         ->givePermissionTo(['comment', 'edit profile', 'change password', '']);
 
     }

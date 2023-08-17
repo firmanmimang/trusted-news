@@ -25,6 +25,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image',
+        'username',
+        'email_verified_at',
     ];
 
     /**
@@ -52,5 +55,10 @@ class User extends Authenticatable
     public function getRouteKeyName()
     {
         return 'username';
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class, 'user_id', 'id');
     }
 }

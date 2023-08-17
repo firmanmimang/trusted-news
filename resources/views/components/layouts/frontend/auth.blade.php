@@ -7,9 +7,8 @@
         <title>{{ isset($title) ? $title .' | '. config('app.name') : config('app.name') }}</title>
         <link rel="icon" type="image/x-icon" href="{{asset('/assets/image/favicon.ico')}}">
 
-        @livewireStyles
-        @livewireScripts
         @vite(['resources/js/entry/frontend/app.js', 'resources/css/app.css'])
+        @livewireStyles
         @stack('cssNduwur')
     </head>
     <body
@@ -29,18 +28,10 @@
         x-init="darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? window.matchMedia('(prefers-color-scheme: dark)').matches"
         :class="{'dark': darkMode == true}"
     >
-        <header>
-            <x-layouts.frontend.partials.navbar/>
-        </header>
-        <x-layouts.frontend.partials.navbar-bottom/>
-
         <main class="mx-auto text-gray-900 dark:text-white dark:bg-boxdark-2">
             {{ $slot }}
         </main>
-
-        <footer class="text-gray-900 dark:text-white dark:bg-boxdark-2">
-            <x-layouts.frontend.partials.footer />
-        </footer>
+        @livewireScripts
         @stack('javascriptNgisor')
     </body>
 </html>

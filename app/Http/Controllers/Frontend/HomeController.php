@@ -11,7 +11,6 @@ use App\Jobs\Frontend\UpdateComment;
 use App\Models\Comment;
 use App\Models\News;
 use App\Policies\CommentPolicy;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -21,7 +20,7 @@ class HomeController extends Controller
     {
         return view('pages.frontend.home', [
             'news' => News::where('publish_status', true)
-                        ->filter(request(['q', 's','category', 'author']))
+                        ->filter(request(['q', 's', 'category', 'author']))
                         ->orderBy('published_at', 'DESC')
                         ->paginate(12)
                         ->withQueryString()
@@ -36,8 +35,6 @@ class HomeController extends Controller
         // dd(auth()->user()->hasPermissionTo('comment'));
 
         $comments = $news->comments()->with('authorRelation')->get();
-
-        // return($comments[0]->authorRelation->imageImage);
 
         return view('pages.frontend.show', compact(['news', 'comments']));
     }
