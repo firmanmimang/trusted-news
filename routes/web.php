@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\EventStreamController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\GuestBookController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\LoginController;
 use App\Http\Controllers\Frontend\LogoutController;
+use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,17 +20,45 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/guest', GuestBookController::class)->name('guest');
 Route::post('/guest', [GuestBookController::class, 'store'])->name('guest.store');
 
-Route::get('/register', RegisterController::class)->name('register')->middleware('guest');
-Route::post('/register', [RegisterController::class, 'store'])->name('register.store')->middleware('guest');
+// register frontend
+Route::get('/register', RegisterController::class)
+      ->name('register')
+      ->middleware('guest');
+Route::post('/register', [RegisterController::class, 'store'])
+      ->name('register.store')
+      ->middleware('guest');
 
+// login frontend
 Route::get('/login', LoginController::class)->name('login')->middleware('guest');
-Route::post('/login', [LoginController::class, 'store'])->name('login.store')->middleware('guest');
+Route::post('/login', [LoginController::class, 'store'])
+      ->name('login.store')
+      ->middleware('guest');
 
-Route::post('/login/{provider}/redirect', [LoginController::class, 'socialiteRedirect'])->name('login.socialite')->middleware('guest');
-Route::get('/login/{provider}/callback', [LoginController::class, 'socialiteCallback'])->middleware('guest');
-Route::post('/login/google/one-tap', [LoginController::class, 'googleOneTapLogin'])->name('login.google.one-tap')->middleware('guest');
+// login socialite
+Route::post('/login/{provider}/redirect', [LoginController::class, 'socialiteRedirect'])
+      ->name('login.socialite')
+      ->middleware('guest');
+Route::get('/login/{provider}/callback', [LoginController::class, 'socialiteCallback'])
+      ->middleware('guest');
+Route::post('/login/google/one-tap', [LoginController::class, 'googleOneTapLogin'])
+      ->name('login.google.one-tap')
+      ->middleware('guest');
 
-Route::post('/logout', LogoutController::class)->name('logout')->middleware('auth');
+// logout frontend
+Route::post('/logout', LogoutController::class)->name('logout')
+      ->middleware('auth');
+
+// profile user
+Route::get('/profile', ProfileController::class)->name('profile')->middleware('auth');
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
+Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update.password')->middleware('auth');
+Route::put('/profile/ses/t/{token:payload}', [ProfileController::class, 'sessionTerminate'])->name('profile.session.terminate')->middleware('auth');
+
+// coba sse
+Route::get('stream/view', function () {
+      return view('welcome');
+});
+Route::get('stream', [EventStreamController::class, 'stream']);
 
 // news comment create
 Route::post('/com/{news:slug}', [HomeController::class, 'storeComment'])
@@ -46,5 +76,6 @@ Route::delete('/com/{news:slug}/{comment:slug}', [HomeController::class, 'delete
       ->middleware('auth');
 
 // news show
-Route::get('/{news}', [HomeController::class, 'show'])->name('news.show');
+Route::get('/{news}', [HomeController::class, 'show'])
+      ->name('news.show');
 

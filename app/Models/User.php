@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Account::class, 'user_id', 'id');
     }
+
+    public function sessions()
+    {
+        return $this->hasMany(Session::class);
+    }
 }

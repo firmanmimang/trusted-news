@@ -8,7 +8,7 @@
     <div class="relative w-1/2 p-6 bg-white shadow-2xl dark:bg-gray-700 rounded-xl">
 
       <div class="absolute flex gap-2 top-7 left-7">
-        <a href="{{ url()->previous() }}" class="flex items-center">
+        <a href="{{ route('home') }}" class="flex items-center">
           <x-icons.chevron-left class="h-7"/>&nbsp;<span class="text-sm font-semibold">Back</span>
         </a>
       </div>

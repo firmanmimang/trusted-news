@@ -105,7 +105,7 @@
               <div class="px-2 pt-2 pb-4 bg-white rounded-md shadow-lg dark:bg-gray-700">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <a class="flex items-start p-2 bg-transparent rounded-lg row dark:hover:bg-gray-600 dark:focus:bg-gray-600 dark:focus:text-white dark:hover:text-white dark:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-                    href="#">
+                    href="{{route('profile')}}">
                     <div class="p-3 text-white bg-teal-500 rounded-lg">
                         <svg fill="none" stroke="currentColor" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
@@ -116,8 +116,8 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="font-semibold">Appearance</p>
-                        <p class="text-sm">Easy customization</p>
+                        <p class="font-semibold">Profile</p>
+                        <p class="text-sm">kostumisasi profile</p>
                     </div>
                   </a>
   

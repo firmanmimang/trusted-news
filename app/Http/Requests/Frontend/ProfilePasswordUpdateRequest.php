@@ -3,10 +3,10 @@
 namespace App\Http\Requests\Frontend;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class RegisterStoreRequest extends FormRequest
+class ProfilePasswordUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,28 +24,27 @@ class RegisterStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama' => ['required', 'max:256', 'regex:/^[a-zA-Z0-9.,?\-!"\s\']+$/'],
-            'email' => [
+            'password_sekarang' => auth()->user()->password ? [
                 'required',
-                'email',
-                'max:256',
-                Rule::unique('users', 'email')->where(function ($query) {
-                    $query->whereNotNull('password');
-                }),
-            ],
-            'password' => [
+                'current_password'
+                // function ($attribute, $value, $fail) {
+                //     if (!Hash::check($value, auth()->user()->password)) {
+                //         $fail(trans('auth.password'));
+                //     }
+                // },
+            ] : '',
+            'password_baru' => [
                 'required',
-                'confirmed',
-                'max:256',
                 Password::min(8)
                     ->letters()
                     ->mixedCase()
                     ->numbers()
                     // ->symbols()
+                    ,
+                'confirmed',
             ],
-            'password_confirmation' => [
-                'required',
-                'max:256',
+            'password_baru_confirmation' => [
+                'required'
             ],
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Events\SessionActiveEvent;
 use App\Helpers\AlertHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\LoginStoreRequest;
@@ -27,6 +28,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         AlertHelper::flashSuccess(trans('auth.success.login', ['user' => auth()->user()->name]));
+        broadcast(new SessionActiveEvent(auth()->user()))->toOthers();
         if($request->has('in')){
             return redirect($request->get('in'));
         }else{

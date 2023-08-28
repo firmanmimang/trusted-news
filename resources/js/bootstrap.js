@@ -30,3 +30,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+// echo dengan server sent event redis
+import Echo from 'laravel-echo';
+
+import { WaveConnector } from 'laravel-wave';
+
+window.Echo = new Echo({ broadcaster: WaveConnector });
+
+window.Echo.private('session.firman-hidayat')
+          .listen('SessionActiveEvent', (e) => {
+              console.log(e);
+          });

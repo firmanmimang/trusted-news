@@ -62,7 +62,7 @@
                     </div>
                     <div class="flex items-start justify-end w-full px-3 md:w-full">
                       <div class="-mr-1">
-                          <input type='submit' class="px-4 py-1 mr-1 font-medium transition duration-300 border border-gray-400 rounded-lg tracking-widebg-white hover:bg-gray-100 dark:hover:bg-body" value='Kirim'>
+                          <input type='submit' class="px-4 py-1 mr-1 font-medium transition duration-300 border border-gray-400 rounded-lg cursor-pointer tracking-widebg-white hover:bg-gray-100 dark:hover:bg-body" value='Kirim'>
                       </div>
                     </div>
                 </div>
@@ -184,7 +184,11 @@
                   @endcanany
                 </div>
                 <div x-show="!editComment" class="-mt-4">
-                  <p  class="whitespace-pre-line">{{$comment->body}}</p>
+                  @if ($comment->author()->hasPermissionTo('comment'))
+                    <p  class="whitespace-pre-line">{{$comment->body}}</p>
+                  @else
+                    <p  class="whitespace-pre-line text-danger">Komentar Ditangguhkan</p>
+                  @endif
                   @if (!$comment->created_at->equalTo($comment->updated_at))
                     <small class="inline-block px-2 py-1 mt-3 text-xs text-white rounded-full bg-meta-4">Edited pada {{$comment->updated_at->diffForHumans()}}</small>  
                   @endif
@@ -212,7 +216,7 @@
                               <button @click.prevent="editComment=false" class="text-red-500 dark:text-red-600">Batal</button>
                           </div>
                           <div class="-mr-1">
-                              <input type='submit' class="px-4 py-1 mr-1 font-medium transition duration-300 border border-gray-400 rounded-lg tracking-widebg-white hover:bg-gray-100 dark:hover:bg-body" value='Simpan'>
+                              <input type='submit' class="px-4 py-1 mr-1 font-medium transition duration-300 border border-gray-400 rounded-lg cursor-pointer tracking-widebg-white hover:bg-gray-100 dark:hover:bg-body" value='Simpan'>
                           </div>
                         </div>
                     </div>
