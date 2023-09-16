@@ -87,7 +87,7 @@
           </tr>
         @empty
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <td scope="row" class="row-span-2 text-center font-semibold p-3">No Data</td>
+            <td scope="row" class="row-span-full text-center font-semibold p-3">No Data</td>
           </tr>
         @endforelse
       </tbody>

@@ -18,6 +18,7 @@ class User extends Authenticatable
 
     const TABLE = 'users';
     const AVATAR_COLLECTION_NAME = 'avatar';
+    const SUPER_ADMIN_EMAIL = 'fhidayat131@gmail.com';
 
     protected $table = self::TABLE;
 

@@ -27,7 +27,7 @@ class RoleSeeder extends Seeder
         )->givePermissionTo([
             "posts management",
             "categories management",
-            "users management",
+            "user management",
         ]);
 
         Role::create([

@@ -22,7 +22,7 @@ class PermissionSeeder extends Seeder
             ["categories management", "cms"],
 
             // access permission
-            ["users management", "cms"],
+            ["user management", "cms"],
             ["role management", "cms"],
             ["permission management", "cms"],
 

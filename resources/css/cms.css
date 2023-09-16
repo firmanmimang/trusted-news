@@ -3,19 +3,11 @@
 
 @layer base {
   body {
-    @apply relative text-base font-normal z-1 bg-whiten text-body;
+    @apply relative text-base font-normal z-1 bg-whiten text-body scroll-smooth;
   }
 }
 
 @layer utilities {
-  /* Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
   .chat-height {
     @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
   }
@@ -24,8 +16,26 @@
   }
 }
 
-/* third-party libraries CSS */
+::-webkit-scrollbar {
+  width: 10px;
+}
 
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* third-party libraries CSS */
 .tableCheckbox:checked ~ div span {
   @apply opacity-100;
 }
@@ -155,8 +165,4 @@ span.flatpickr-weekday,
 }
 .custom-input-date-2::-webkit-calendar-picker-indicator {
   background-image: url(../assets/icon/icon-arrow-down.svg);
-}
-
-[x-cloak] {
-  display: none !important;
 }

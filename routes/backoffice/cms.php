@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backoffice\Access\PermissionController;
 use App\Http\Controllers\Backoffice\Access\RoleController;
+use App\Http\Controllers\Backoffice\Access\UserController;
 use App\Http\Controllers\Backoffice\Auth\AuthenticateSessionController;
 use App\Http\Controllers\Backoffice\DashboardController;
 use App\Http\Controllers\Backoffice\Profile\ChangePasswordController;
@@ -60,7 +61,7 @@ if(config("cms.enable") && config("cms.path")){
       });
 
       Route::group(['as'=> 'access.', 'prefix' => 'access',], function () {
-        Route::group(['as'=> 'user.', 'prefix' => 'user', 'middleware' => ['role_or_permission:super admin|user management',]], function(){
+        Route::group(['as'=> 'user.', 'prefix' => 'user', 'middleware' => ['role_or_permission:super admin|user management,cms',]], function(){
           /**
             * user index
             * route: CMS_PATH/access/user
@@ -68,6 +69,13 @@ if(config("cms.enable") && config("cms.path")){
             * middleware: [auth:cms, role_or_permission:super admin|user management]
             */
           Route::get('/', [UserController::class, 'index'])->name('index');
+          /**
+            * user index
+            * route: CMS_PATH/access/user
+            * name: cms.access.user.index
+            * middleware: [auth:cms, role_or_permission:super admin|user management]
+            */
+          Route::get('/stream', [UserController::class, 'stream'])->name('stream');
           /**
             * user index
             * route: CMS_PATH/access/user/create

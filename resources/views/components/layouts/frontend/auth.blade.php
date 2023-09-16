@@ -8,7 +8,6 @@
         <link rel="icon" type="image/x-icon" href="{{asset('/assets/image/favicon.ico')}}">
 
         @vite(['resources/js/entry/frontend/app.js', 'resources/css/app.css'])
-        @livewireStyles
         @stack('cssNduwur')
     </head>
     <body
@@ -31,7 +30,6 @@
         <main class="mx-auto text-gray-900 dark:text-white dark:bg-boxdark-2">
             {{ $slot }}
         </main>
-        @livewireScripts
         @stack('javascriptNgisor')
     </body>
 </html>

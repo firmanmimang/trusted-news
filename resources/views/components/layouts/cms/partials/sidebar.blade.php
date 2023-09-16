@@ -283,6 +283,15 @@
           {{-- Menu Item Dashboard --}}
           <li>
             <a
+              href="{{route('cms.access.user.index')}}"
+              class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4"
+              >
+              <x-icons.dashboard-icon width="18" height="18" />
+              User
+            </a>
+          </li>
+          <li>
+            <a
               href="{{route('cms.access.role.index')}}"
               class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4"
               >

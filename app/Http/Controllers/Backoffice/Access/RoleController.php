@@ -61,7 +61,8 @@ class RoleController extends Controller
             // throw $th;
             Log::error($th);
 
-            return back()->withErrors([trans('server.500')], 500);
+            AlertHelper::flashError(trans('server.500'));
+            return back();
         }
     }
 
@@ -107,7 +108,8 @@ class RoleController extends Controller
             // throw $th;
             Log::error($th);
 
-            return back()->withErrors([trans('server.500')], 500);
+            AlertHelper::flashError(trans('server.500'));
+            return back();
         }
     }
 
@@ -128,7 +130,8 @@ class RoleController extends Controller
                 return redirect()->route('cms.access.role.index');
             }
             else{
-                return redirect()->route('cms.dashboard')->with('alert', ['type' => AlertHelper::ALERT_SUCCESS, 'message' => trans('success.crud_delete', ['type' => "Role $role->name"])]);
+                AlertHelper::flashSuccess(trans('success.crud_delete', ['type' => "Role $role->name"]));
+                return redirect()->route('cms.dashboard');
             }
         } catch (\Throwable $th) {
             DB::rollBack();

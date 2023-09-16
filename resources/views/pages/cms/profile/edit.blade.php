@@ -1,6 +1,6 @@
 <x-layouts.cms.main title="Dashboard">
   <x-cms.title title="Edit Profile" subtitle="Profile {{auth()->user()->name}}"/>
-  <form novalidate action="{{route('cms.profile.update')}}" method="POST" enctype="multipart/form-data">
+  <form action="{{route('cms.profile.update')}}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <label for="photo-profile" class="cursor-pointer" x-data="{
@@ -32,7 +32,7 @@
         <x-icons.person-circle class="w-4 h-4 text-gray-500 dark:text-gray-400"/>
       </x-slot:icon>
     </x-cms.textfield>
-    <x-cms.textfield value="{{auth()->user()->email}}" type="email" name="name" :disabled="true" :required="true" id="email" label="Email" placeholder="Your Email">
+    <x-cms.textfield value="{{auth()->user()->email}}" type="email" name="email" :disabled="true" :required="true" id="email" label="Email" placeholder="Your Email">
       <x-slot:icon>
         <x-icons.envelope class="w-4 h-4 text-gray-500 dark:text-gray-400"/>
       </x-slot:icon>

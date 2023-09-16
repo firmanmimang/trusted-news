@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
+use App\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 trait HasImage
 {
@@ -26,6 +26,6 @@ trait HasImage
     {
         return $this->image ?
             $this->image :
-            '/assets/default/user-default.png';
+            ImageHelper::DEFAULT_USER_IMAGE;
     }
 }

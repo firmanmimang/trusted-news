@@ -7,8 +7,6 @@
         <title>{{ isset($title) ? $title .' | '. config('app.name') : config('app.name') }}</title>
         <link rel="icon" type="image/x-icon" href="{{asset('/assets/image/favicon.ico')}}">
 
-        @livewireStyles
-        @livewireScripts
         @vite(['resources/js/entry/frontend/app.js', 'resources/css/app.css'])
         @stack('javascriptNduwur')
     </head>
