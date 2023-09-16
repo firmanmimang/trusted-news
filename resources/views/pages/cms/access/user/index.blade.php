@@ -17,15 +17,16 @@
         value.user_online.map((user, index) => {
           const elementStatus = document.getElementById(`userStatus${user.id}`)
           const elementTextStatus = document.getElementById(`userTextStatus${user.id}`)
-          if(user.online){
-            elementStatus.classList.remove('!bg-gray-500')
-            elementStatus.classList.add('!bg-green-500')
-            elementTextStatus.textContent = 'Online';
-          }
-          else{
-            elementStatus.classList.remove('!bg-green-500')
-            elementStatus.classList.add('!bg-gray-500')
-            elementTextStatus.textContent = 'Offline';
+          if (elementStatus && elementTextStatus) {
+              if (user.online) {
+                  elementStatus.classList.remove('!bg-gray-500');
+                  elementStatus.classList.add('!bg-green-500');
+                  elementTextStatus.textContent = 'Online';
+              } else {
+                  elementStatus.classList.remove('!bg-green-500');
+                  elementStatus.classList.add('!bg-gray-500');
+                  elementTextStatus.textContent = 'Offline';
+              }
           }
         })
       }

@@ -25,7 +25,7 @@ class UserController extends Controller
                         ->when(request()->get('column'), function($query){
                             $query->orderBy(request()->get('column'), request()->get('order'));
                         })
-                        ->latest()->paginate(request()->size ?? 10)
+                        ->latest()->paginate(request()->size ?? 1)
         ]);
     }
 
