@@ -6,7 +6,8 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@alpinejs/persist": "^3.12.3",
+        "@alpinejs/persist": "^3.13.0",
+        "@hotwired/stimulus": "^3.2.2",
         "@hotwired/turbo": "^7.2.5",
         "alpinejs": "^3.11.1",
         "apexcharts": "^3.41.0",
@@ -23,6 +24,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "laravel-wave": "^0.7.3"
+        "laravel-wave": "^0.7.3",
+        "tw-elements": "^1.0.0"
     }
 }

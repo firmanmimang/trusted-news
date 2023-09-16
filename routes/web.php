@@ -50,8 +50,8 @@ Route::post('/logout', LogoutController::class)->name('logout')
 
 // profile user
 Route::get('/profile', ProfileController::class)->name('profile')->middleware('auth');
-Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
-Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update.password')->middleware('auth');
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware(['auth', 'can:edit profile']);
+Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update.password')->middleware(['auth', 'can:edit profile']);
 Route::put('/profile/ses/t/{token:payload}', [ProfileController::class, 'sessionTerminate'])->name('profile.session.terminate')->middleware('auth');
 
 // coba sse

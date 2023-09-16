@@ -40,7 +40,7 @@ class SessionActiveEvent implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'sessions' => $this->user->sessions(),
+            'sessions' => $this->user,
         ];
     }
 }

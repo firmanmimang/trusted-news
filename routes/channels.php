@@ -19,5 +19,5 @@ use Illuminate\Support\Facades\Broadcast;
 // });
 
 Broadcast::channel('session.{username}', function (User $user, string $username) {
-    return $user->id === User::where('username', $username)->first()->id;
+    return (int )$user?->id === (int) User::where('username', $username)->first()->id;
 });

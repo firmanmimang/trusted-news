@@ -12,7 +12,7 @@
 
 <body 
   x-init="darkMode = JSON.parse(localStorage.getItem('darkMode')); $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-  x-data="{ page: 'signin', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+  x-data="{ 'darkMode': true }"
   :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
 >
   <main class="">

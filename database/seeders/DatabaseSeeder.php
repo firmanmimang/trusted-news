@@ -26,7 +26,11 @@ class DatabaseSeeder extends Seeder
             'password'=> bcrypt('password'),
         ])
         ->assignRole('super admin')
-        ->givePermissionTo(['comment', 'edit profile', 'change password', '']);
+        ->givePermissionTo([
+            'comment',
+            'edit profile',
+            'change password',
+        ]);
 
     }
 }

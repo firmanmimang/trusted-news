@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::useScriptTagAttributes([
             'data-turbo-track' => 'reload', // Specify a value for the attribute...
-            // 'async' => true, // Specify an attribute without a value...
+            'async' => true, // Specify an attribute without a value...
             'integrity' => false, // Exclude an attribute that would otherwise be included...
         ]);
          
@@ -40,6 +40,6 @@ class AppServiceProvider extends ServiceProvider
             View::share('categoriesFooter', count($category) > 0 ? array_chunk($category->toArray(), ceil(count($category)/2)) : null);
         }
 
-        Model::preventLazyLoading(! app()->isProduction());
+        Model::preventLazyLoading(!app()->isProduction());
     }
 }

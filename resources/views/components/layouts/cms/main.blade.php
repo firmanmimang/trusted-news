@@ -5,7 +5,8 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign In | TailAdmin - Tailwind CSS Admin Dashboard Template</title>
+  <title>{{ isset($title) ? $title .' | CMS '. config('app.name') : config('app.name') }}</title>
+  <link rel="icon" type="image/x-icon" href="{{asset('/assets/image/favicon.ico')}}">
   <script defer src="{{asset('cms/bundle.js')}}" ></script>
   @vite(['resources/js/entry/cms/app.js', 'resources/css/cms.css'])
 </head>
@@ -19,7 +20,7 @@
     <x-layouts.cms.partials.sidebar />
     <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
       <x-layouts.cms.partials.header />
-      <main>
+      <main class="p-4">
         {{ $slot }}
       </main>
     </div>

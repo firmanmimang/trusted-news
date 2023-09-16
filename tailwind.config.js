@@ -5,7 +5,8 @@ export default {
     "./resources/**/*.js",
     "./resources/**/*.vue",
     './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-    "./node_modules/flowbite/**/*.js"
+    "./node_modules/flowbite/**/*.js",
+    "./node_modules/tw-elements/dist/js/**/*.js"
   ],
   darkMode: 'class',
   theme: {
@@ -299,7 +300,8 @@ export default {
     },
   },
   plugins: [
-    require('flowbite/plugin')
+    require('flowbite/plugin'),
+    [require("tw-elements/dist/plugin.cjs")],
   ],
 }
 

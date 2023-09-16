@@ -9,8 +9,8 @@
 
         @livewireStyles
         @livewireScripts
-        @stack('cssNduwur')
         @vite(['resources/js/entry/frontend/app.js', 'resources/css/app.css'])
+        @stack('javascriptNduwur')
     </head>
     <body
         class="m-auto antialiased max-w-screen-2xl dark:text-white dark:bg-boxdark-2"

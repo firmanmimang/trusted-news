@@ -16,6 +16,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasImage, ModelHelpers;
 
+    const TABLE = 'users';
+    const AVATAR_COLLECTION_NAME = 'avatar';
+
+    protected $table = self::TABLE;
+
     /**
      * The attributes that are mass assignable.
      *

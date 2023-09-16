@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer components {
+  .form-control-ff {
+    @apply mt-7
+  }
   .news-body a[href] {
     @apply text-blue-700 transition duration-200 hover:text-blue-800 dark:text-blue-600 dark:hover:text-blue-700;
   }

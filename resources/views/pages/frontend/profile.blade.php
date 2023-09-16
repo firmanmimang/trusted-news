@@ -1,3 +1,12 @@
+@push('javascriptNgisor')
+  <script defer>
+    window.Echo.private('session.{{auth()->user()->username}}')
+          .listen('SessionActiveEvent', (e) => {
+              console.log(e);
+          });
+  </script>
+@endpush
+
 <x-layouts.frontend.main title="Berita Terbaru">
   <section class="grid w-full grid-cols-5 gap-5 px-5 py-10 m-auto">
     {{-- session active --}}
@@ -5,7 +14,7 @@
       <h2 class="text-2xl font-bold text-center">Sessi Aktif</h2>
       <turbo-frame id="session" class="flex flex-col gap-4">
         @foreach ($active_session as $session)
-          <div class="p-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl flex justify-between">
+          <div class="flex justify-between p-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl">
             <div class="grow">
               <table>
                 <tr>
@@ -39,7 +48,7 @@
               </table>
             </div>
             <div class="">
-              <div class="flex items-center gap-2 flex-col justify-center">
+              <div class="flex flex-col items-center justify-center gap-2">
                 @if($session->payload_decode['_token'] === csrf_token())
                   <p>Your session</p>
                 @endif
@@ -114,9 +123,16 @@
     </div>
     <div class="col-span-2">
       {{-- profile --}}
-      <div class="w-full p-6 mb-6 bg-white shadow-2xl dark:bg-gray-700 rounded-xl">
+      <div class="relative w-full p-6 mb-6 overflow-hidden bg-white shadow-2xl dark:bg-gray-700 rounded-xl">
+        @if (!auth()->user()->hasPermissionTo('edit profile'))
+          <div class="absolute inset-0 z-10 flex items-center justify-center font-semibold uppercase bg-white/25 backdrop-blur-sm">
+            <p class="text-lg font-semibold text-center uppercase text-danger">
+              akses update profile kamu sedang ditangguhkan. <br>
+              <span class="text-gray-600 dark:text-gray-400">hubungi <a href="{{route('contact')}}" class="dark:text-blue-500 text-primary">Trusted News</a> untuk info lebih lanjut</span>
+            </p>
+          </div>
+        @endif
         <h1 class="pb-4 text-2xl font-bold text-center" id="profile">Profile Kamu</h1>
-        @if(auth()->user()->hasPermissionTo('change password'))
           <form action="{{route('profile.update')}}"
             method="POST"
             enctype="multipart/form-data"
@@ -204,12 +220,6 @@
               </button>
             </div>
           </form>
-        @else
-          <p class="text-lg font-semibold text-center uppercase text-danger">
-            akses update profile kamu sedang ditangguhkan. <br>
-            <span class="text-gray-600 dark:text-gray-400">hubungi <a href="{{route('contact')}}" class="dark:text-blue-500 text-primary">Trusted News</a> untuk info lebih lanjut</span>
-          </p>
-        @endif
       </div>
   
       {{-- change password --}}
