@@ -16,25 +16,28 @@ class PermissionSeeder extends Seeder
     {
         $permissions = [
             // posts (news) crud
-            "posts management",
+            ["posts management", "cms"],
             
             // categories crud
-            "categories management",
+            ["categories management", "cms"],
 
-            // users crud
-            "users management",
+            // access permission
+            ["users management", "cms"],
+            ["role management", "cms"],
+            ["permission management", "cms"],
 
             // manage profile
-            "edit profile",
-            "change password",
+            ["edit profile", "web"],
+            ["change password", "web"],
 
             // can comment or not
-            "comment",
+            ["comment", "web"],
         ];
 
         for ($i = 0; $i < count($permissions); $i++) {
             Permission::create([
-                "name" => $permissions[$i]
+                "name" => $permissions[$i][0],
+                "guard_name" => $permissions[$i][1],
             ]);
         }
     }

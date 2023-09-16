@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8" />
@@ -8,6 +8,8 @@
   <title>{{ isset($title) ? $title .' | CMS '. config('app.name') : config('app.name') }}</title>
   <link rel="icon" type="image/x-icon" href="{{asset('/assets/image/favicon.ico')}}">
   <script defer src="{{asset('cms/bundle.js')}}" ></script>
+  @livewireStyles
+  @livewireScripts
   @vite(['resources/js/entry/cms/app.js', 'resources/css/cms.css'])
 </head>
 

@@ -1,3 +1,3 @@
 import './turbo';
 import './alpine';
-import './flowbite'
+import './flowbite';

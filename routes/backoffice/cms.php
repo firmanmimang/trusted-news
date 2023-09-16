@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backoffice\Access\PermissionController;
+use App\Http\Controllers\Backoffice\Access\RoleController;
 use App\Http\Controllers\Backoffice\Auth\AuthenticateSessionController;
 use App\Http\Controllers\Backoffice\DashboardController;
 use App\Http\Controllers\Backoffice\Profile\ChangePasswordController;
@@ -104,7 +105,7 @@ if(config("cms.enable") && config("cms.path")){
           Route::delete('/{user}', [UserController::class, 'destroy'])->name('delete');
         });
   
-        Route::group(['as'=> 'role.', 'prefix' => 'role', 'middleware' => ['role_or_permission:super admin|role management',]], function(){
+        Route::group(['as'=> 'role.', 'prefix' => 'role', 'middleware' => ['role_or_permission:super admin|role management,cms',]], function(){
           /**
             * role index
             * route: CMS_PATH/access/role
@@ -153,9 +154,9 @@ if(config("cms.enable") && config("cms.path")){
           * permission index
           * route: CMS_PATH/access/permission
           * name: cms.access.permission.index
-          * middleware: [auth:cms, role_or_permission:super admin|permission management]
+          * middleware: [auth:cms, role_or_permission:super admin|permission management,cms]
           */
-        Route::get('/permission', [PermissionController::class, 'index'])->name('permission.index')->middleware(['role_or_permission:super admin|permission management',]);
+        Route::get('/permission', [PermissionController::class, 'index'])->name('permission.index')->middleware(['role_or_permission:super admin|permission management,cms',]);
       });
     });
 

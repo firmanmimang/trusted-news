@@ -31,5 +31,7 @@
       </div>
     @endif
   </div>
-  <p class="mt-2 text-sm text-red-700 dark:text-red-500">{{$error}}</p>
+  @if ($error)
+    <p class="mt-2 text-sm text-red-700 dark:text-red-500">{{$error}}</p>  
+  @endif
 </div>

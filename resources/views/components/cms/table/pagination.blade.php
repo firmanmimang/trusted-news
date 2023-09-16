@@ -1,15 +1,16 @@
 {{-- @if ($paginator->hasPages()) --}}
   <nav class="flex items-center justify-between pt-4" aria-label="Table navigation">
     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span class="font-semibold text-gray-900 dark:text-white">{{$paginator->firstItem()}} - {{$paginator->lastItem()}}</span> of <span class="font-semibold text-gray-900 dark:text-white">{{$paginator->total()}}</span></span>
-    <div class="flex items-center gap-2">
+    <div class="flex items-stretch gap-2">
       {{-- dropdown flowbite size table --}}
       <div
-      x-cloak
-      x-data="{
-        size:{{request()->get('size')??10}}
-      }"
+        class="h-8"
+        x-cloak
+        x-data="{
+          size:{{request()->get('size')??10}}
+        }"
       >
-        <button x-text="size" id="sizeActionButton" data-dropdown-toggle="dropdownAction" class="inline-block items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-0 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+        <button x-text="size" id="sizeActionButton" data-dropdown-toggle="dropdownAction" class="flex items-center h-full text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-0 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
           10
         </button>
         <!-- Dropdown menu -->

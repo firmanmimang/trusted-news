@@ -5,13 +5,13 @@
     @method('PUT')
     <label for="photo-profile" class="cursor-pointer" x-data="{
       form: {
-        avatar: '{{auth()->user()->imageImage}}',
+        avatar: '{{old('avatar', auth()->user()->imageImage)}}',
       },
       handleInputImage(e){
         if(e.target.files[0]){
           this.form.avatar = URL.createObjectURL(e.target.files[0])
         }else{
-          this.form.avatar = '{{auth()->user()->imageImage}}'
+          this.form.avatar = '{{old('avatar', auth()->user()->imageImage)}}'
         }
       },
     }
@@ -20,6 +20,7 @@
         <img :src="form.avatar" x-cloak alt="photo profile" class="object-cover w-full h-full">
       </div>
       <input @input="handleInputImage" type="file" name="avatar" id="photo-profile" hidden>
+      @if($errors->first('avatar')) <p class="text-center mt-2 text-sm text-red-700 dark:text-red-500">{{$errors->first('avatar')}}</p> @endif
     </label>
     <x-cms.textfield error="{{$errors->first('name')}}" value="{{old('name', auth()->user()->name)}}" type="text" name="name" :required="true" id="name" label="Name" placeholder="Your Name">
       <x-slot:icon>

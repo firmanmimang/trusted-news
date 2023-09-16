@@ -1,8 +1,14 @@
-<x-layouts.cms.main title="Permission Management">
-  <x-cms.title title="Permission Management" subtitle="All Permssion on {{env('APP_NAME')}}"/>
+<x-layouts.cms.main title="Role Management">
+  <x-cms.title title="Role Management" subtitle="Role on {{env('APP_NAME')}}"/>
     
-  <div class="mt-8 flex justify-end">
-    <form action="{{route('cms.access.permission.index')}}" method="GET" class="relative">
+  <div class="mt-8 flex justify-between items-stretch">
+    <div>
+      <a href="{{route('cms.access.role.create')}}" class="h-full inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+          <span class="sr-only">Create Role</span>
+          Create Role
+      </a>
+    </div>
+    <form action="{{route('cms.access.role.index')}}" method="GET" class="relative">
       @if (request('size'))
           <input type="hidden" value="{{request('size')}}" name="size">
       @endif
@@ -24,10 +30,15 @@
         <tr>
           <th scope="col" class="px-6 py-3">
             <div class="flex items-center gap-2">
-              Permission Name
+              Role Name
               <a href="{{request()->url()}}?{{request()->get('size') ? 'size='.request()->get('size').'&' : null}}column=name&order={{ (request()->get('column') == 'name' && request()->get('order') == 'desc') ? 'asc':'desc'}}{{request()->get('search') ? '&search='.request()->get('search') : null}}">
                 <x-icons.chevron-down-icon class="{{ request()->get('column') == 'name' ? 'fill-blue-500':'' }} {{ (request()->get('column') == 'name' && request()->get('order') == 'desc') ? 'rotate-180':'' }}"/>
               </a>
+            </div>
+          </th>
+          <th scope="col" class="px-6 py-3">
+            <div class="flex items-center justify-center">
+              Permission
             </div>
           </th>
           <th scope="col" class="px-6 py-3">
@@ -43,19 +54,36 @@
         </tr>
       </thead>
       <tbody>
-        @forelse ($permissions as $permission)
+        @forelse ($roles as $role)
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {{$permission->name}}
+                  {{$role->name}}
               </td>
 
-              <td scope="row" class=" text-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {{$permission->guard_name}}
+              <td scope="row" class="text-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  @forelse ( $role->permissions->pluck('name') as $permission )
+                    <span>{{$permission}}</span>,
+                  @empty
+                    @if($role->name == App\Models\Role::SUPER_ADMIN)
+                      <span class="text-green-500">All Granted</span>
+                    @else
+                      &dash;
+                    @endif
+                  @endforelse
+              </td>
+
+              <td scope="row" class="text-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{$role->guard_name}}
               </td>
               
-              <td scope="row" class="px-6 py-4 space-x-2 space-y-2 text-center">
-                  &dash;
-              </td>
+              <td class="flex justify-center items-center px-6 py-4 space-x-3">
+                <a href="{{route('cms.access.role.edit', $role)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                <form action="{{route('cms.access.role.delete', $role)}}" method="post">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</button>
+                </form>
+            </td>
           </tr>
         @empty
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -64,8 +92,6 @@
         @endforelse
       </tbody>
     </table>
-    {{$permissions->links('components.cms.table.pagination')}}
+    {{$roles->links('components.cms.table.pagination')}}
   </div>
-
-
 </x-layouts.cms.main>

@@ -6,7 +6,7 @@ export default {
     "./resources/**/*.vue",
     './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     "./node_modules/flowbite/**/*.js",
-    "./node_modules/tw-elements/dist/js/**/*.js"
+    "./node_modules/tw-elements/dist/js/**/*.js",
   ],
   darkMode: 'class',
   theme: {
@@ -300,8 +300,11 @@ export default {
     },
   },
   plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/typography'),
     require('flowbite/plugin'),
-    [require("tw-elements/dist/plugin.cjs")],
+    require("tw-elements/dist/plugin.cjs"),
   ],
 }
 

@@ -13,6 +13,7 @@ return [
     */
 
     '500' => 'Terjadi kesalahan pada server, mohon coba beberapa saat lagi.',
+    '403' => 'Otorisasi anda tidak cukup.',
     '419' => 'Halaman expired, mohon refresh halaman dan coba lagi.',
     'recaptcha' => 'Verifikasi captcha gagal, mohon coba lagi.',
     'session_unavailable' => 'Anda sudah login di perangkat lain.',

@@ -13,6 +13,7 @@ return [
     */
 
     '500' => 'Something went wrong on server. Please try again later.',
+    '403' => 'Your authoritation not enuogh.',
     '419' => 'The page expired, please refresh the page and try again.',
     'recaptcha' => 'Captcha verification failed, Please try again.',
     'session_unavailable' => 'You already log in on another device.',

@@ -12,7 +12,9 @@ class PermissionController extends Controller
     {
         return view('pages.cms.access.permission.index', [
             'permissions' => Permission::
-                                where('name', 'LIKE', '%'.request()->get('search').'%')
+                                when(request()->get('search'), function($query){
+                                    $query->where('name', 'LIKE', '%'.request()->get('search').'%');
+                                })
                                 ->when(request()->get('column'), function($query){
                                     $query->orderBy(request()->get('column'), request()->get('order'));
                                 })
