@@ -39,7 +39,13 @@ class UserController extends Controller
                 echo "\n\n";
 
                 $user_online = [];
-                foreach(User::get() as $user){
+
+                $seconds = 60;
+                $users = Cache::remember('users', $seconds, function () {
+                    return User::get();
+                });
+
+                foreach($users as $user){
                     if(Cache::has('user-online' . $user->id)){
                         $user_online[] = [
                             'id' => $user->id,
