@@ -4,6 +4,7 @@ use App\Http\Controllers\Backoffice\Access\PermissionController;
 use App\Http\Controllers\Backoffice\Access\RoleController;
 use App\Http\Controllers\Backoffice\Access\UserController;
 use App\Http\Controllers\Backoffice\Auth\AuthenticateSessionController;
+use App\Http\Controllers\Backoffice\Category\CategoryController;
 use App\Http\Controllers\Backoffice\DashboardController;
 use App\Http\Controllers\Backoffice\Profile\ChangePasswordController;
 use App\Http\Controllers\Backoffice\Profile\ProfileController;
@@ -165,6 +166,51 @@ if(config("cms.enable") && config("cms.path")){
           * middleware: [auth:cms, role_or_permission:super admin|permission management,cms]
           */
         Route::get('/permission', [PermissionController::class, 'index'])->name('permission.index')->middleware(['role_or_permission:super admin|permission management,cms',]);
+      });
+
+      Route::group(['as'=> 'category.', 'prefix' => 'category', 'middleware' => ['role_or_permission:super admin|category management,cms',]], function(){
+        /**
+          * category index
+          * route: CMS_PATH/category
+          * name: cms.category.index
+          * middleware: [auth:cms, role_or_permission:category management]
+          */
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        /**
+          * category store
+          * route: CMS_PATH/category
+          * name: cms.category.store
+          * middleware: [auth:cms, role_or_permission:category management]
+          */
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        /**
+          * category store
+          * route: CMS_PATH/category
+          * name: cms.category.store
+          * middleware: [auth:cms, role_or_permission:category management]
+          */
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        /**
+          * category update
+          * route: CMS_PATH/category/{category}
+          * name: cms.category.update
+          * middleware: [auth:cms, role_or_permission:category management]
+          */
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
+        /**
+          * category update
+          * route: CMS_PATH/category/{category}
+          * name: cms.category.update
+          * middleware: [auth:cms, role_or_permission:category management]
+          */
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        /**
+          * category delete
+          * route: CMS_PATH/category/{category}
+          * name: cms.category.delete
+          * middleware: [auth:cms, role_or_permission:category management]
+          */
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('delete');
       });
     });
 

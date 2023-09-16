@@ -25,8 +25,8 @@ class RoleSeeder extends Seeder
             "guard_name" => 'cms',
         ]
         )->givePermissionTo([
-            "posts management",
-            "categories management",
+            "post management",
+            "category management",
             "user management",
         ]);
 
@@ -35,7 +35,7 @@ class RoleSeeder extends Seeder
             'guard_name' => 'cms',
         ])
         ->givePermissionTo([
-            "posts management",
+            "post management",
         ]);
         
         Role::create(['name' => 'subscriber']);

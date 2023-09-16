@@ -16,10 +16,10 @@ class PermissionSeeder extends Seeder
     {
         $permissions = [
             // posts (news) crud
-            ["posts management", "cms"],
+            ["post management", "cms"],
             
             // categories crud
-            ["categories management", "cms"],
+            ["category management", "cms"],
 
             // access permission
             ["user management", "cms"],
