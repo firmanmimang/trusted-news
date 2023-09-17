@@ -38,6 +38,11 @@
           </th>
           <th scope="col" class="px-6 py-3">
             <div class="flex items-center justify-center">
+              Slug
+            </div>
+          </th>
+          <th scope="col" class="px-6 py-3">
+            <div class="flex items-center justify-center">
               Action
             </div>
           </th>
@@ -48,6 +53,10 @@
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {{$category->name}}
+              </td>
+
+              <td scope="row" class="text-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{$category->slug}}
               </td>
 
               <td class="flex justify-center items-center px-6 py-4 space-x-3">
