@@ -9,6 +9,7 @@
   <link rel="icon" type="image/x-icon" href="{{asset('/assets/image/favicon.ico')}}">
 
   @vite(['resources/js/entry/cms/app.js', 'resources/css/cms.css'])
+  @stack('javascriptNduwur')
 </head>
 
 <body 

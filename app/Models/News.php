@@ -2,15 +2,23 @@
 
 namespace App\Models;
 
+use App\Traits\HasImage;
+use App\Traits\ModelHelpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+use Tonysm\RichTextLaravel\Casts\AsRichTextContent;
+use Tonysm\RichTextLaravel\Models\Traits\HasRichText;
 
 class News extends Model
 {
-    use HasFactory;
+    use HasFactory, ModelHelpers, HasImage;
+    use HasRichText;
 
-    protected $table = 'news';
+    const TABLE = 'news';
+
+    protected $table = self::TABLE;
 
     // protected $fillable = ['title', 'excerpt', 'body'];
     protected $guarded = ['id'];
@@ -21,7 +29,13 @@ class News extends Model
         'publish_status' => 'boolean',
         'comment_status' => 'boolean',
         'is_highlight' => 'boolean',
+        'is_crawl' => 'boolean',
         'published_at' => 'datetime',
+        'body' => AsRichTextContent::class,
+    ];
+
+    protected $richTextFields = [
+        'body',
     ];
 
     /**
@@ -63,6 +77,16 @@ class News extends Model
                             ;
             });
         });
+    }
+
+    public function scopeCrawlStatus($query, bool $status)
+    {
+        return $query->where('is_crawl', $status);
+    }
+
+    public static function generateExcerpt(string $string, $limit = 200):string
+    {
+        return trim(Str::limit(preg_replace('/&nbsp;/', ' ', strip_tags($string)), $limit));
     }
 
     public function category()

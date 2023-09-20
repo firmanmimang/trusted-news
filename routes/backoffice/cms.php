@@ -6,6 +6,7 @@ use App\Http\Controllers\Backoffice\Access\UserController;
 use App\Http\Controllers\Backoffice\Auth\AuthenticateSessionController;
 use App\Http\Controllers\Backoffice\Category\CategoryController;
 use App\Http\Controllers\Backoffice\DashboardController;
+use App\Http\Controllers\Backoffice\News\NewsController;
 use App\Http\Controllers\Backoffice\Profile\ChangePasswordController;
 use App\Http\Controllers\Backoffice\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -179,7 +180,7 @@ if(config("cms.enable") && config("cms.path")){
         /**
           * category store
           * route: CMS_PATH/category
-          * name: cms.category.store
+          * name: cms.category.create
           * middleware: [auth:cms, role_or_permission:category management]
           */
         Route::get('/create', [CategoryController::class, 'create'])->name('create');
@@ -193,7 +194,7 @@ if(config("cms.enable") && config("cms.path")){
         /**
           * category update
           * route: CMS_PATH/category/{category}
-          * name: cms.category.update
+          * name: cms.category.edit
           * middleware: [auth:cms, role_or_permission:category management]
           */
         Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
@@ -211,6 +212,97 @@ if(config("cms.enable") && config("cms.path")){
           * middleware: [auth:cms, role_or_permission:category management]
           */
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('delete');
+      });
+
+      Route::group(['as'=> 'news.', 'prefix' => 'news', 'middleware' => ['role_or_permission:super admin|post management,cms',]], function(){
+        Route::group(['as'=> 'in-house.', 'prefix' => 'in-house'], function(){
+          /**
+            * news in-house index
+            * route: CMS_PATH/news/in-house
+            * name: cms.news.in-house.index
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::get('/', [NewsController::class, 'index'])->name('index');
+          /**
+            * news in-house store
+            * route: CMS_PATH/news/in-house/create
+            * name: cms.news.in-house.create
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::get('/create', [NewsController::class, 'create'])->name('create');
+          /**
+            * news in-house store
+            * route: CMS_PATH/news/in-house/
+            * name: cms.news.in-house.store
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::post('/', [NewsController::class, 'store'])->name('store');
+          /**
+            * news in-house update
+            * route: CMS_PATH/news/in-house/{news}
+            * name: cms.news.in-house.edit
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::get('/{news}/edit', [NewsController::class, 'edit'])->name('edit');
+          /**
+            * news in-house update
+            * route: CMS_PATH/news/in-house/{news}
+            * name: cms.news in-house.update
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::put('/{news}', [NewsController::class, 'update'])->name('update');
+          /**
+            * news in-house delete
+            * route: CMS_PATH/news/in-house/{news}
+            * name: cms.news in-house.delete
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::delete('/{news}', [NewsController::class, 'destroy'])->name('delete');
+        });
+        Route::group(['as'=> 'third-party.', 'prefix' => 'third-party'], function(){
+          /**
+            * news third-party index
+            * route: CMS_PATH/news/third-party
+            * name: cms.news.third-party.index
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::get('/', [NewsController::class, 'index'])->name('index');
+          /**
+            * news third-party store
+            * route: CMS_PATH/news/third-party/create
+            * name: cms.news.third-party.create
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::get('/create', [NewsController::class, 'create'])->name('create');
+          /**
+            * news third-party store
+            * route: CMS_PATH/news/third-party/
+            * name: cms.news.third-party.store
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::post('/', [NewsController::class, 'store'])->name('store');
+          /**
+            * news third-party update
+            * route: CMS_PATH/news/third-party/{news}
+            * name: cms.news.third-party.edit
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::get('/{news}/edit', [NewsController::class, 'edit'])->name('edit');
+          /**
+            * news third-party update
+            * route: CMS_PATH/news/third-party/{news}
+            * name: cms.news third-party.update
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::put('/{news}', [NewsController::class, 'update'])->name('update');
+          /**
+            * news third-party delete
+            * route: CMS_PATH/news/third-party/{news}
+            * name: cms.news third-party.delete
+            * middleware: [auth:cms, role_or_permission:post management]
+            */
+          Route::delete('/{news}', [NewsController::class, 'destroy'])->name('delete');
+        });
       });
     });
 

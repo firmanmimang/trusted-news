@@ -13,6 +13,12 @@ trait HasImage
         return Storage::url($file->storeAs('user-images', md5($file->getClientOriginalName()).'.'.$file->extension()));
     }
 
+    public function replaceImageNews($file)
+    {
+        if($this->image) $this->deleteImage();
+        return Storage::url($file->storeAs('news-images', md5($file->getClientOriginalName()).'.'.$file->extension()));
+    }
+
     public function deleteImage()
     {
         if($this->image)Storage::delete(str_replace('/storage', '', $this->image));

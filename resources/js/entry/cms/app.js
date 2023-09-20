@@ -3,6 +3,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import "../../../css/cms.css";
 import '../../elements/turbo-echo-stream-tag';
 import '../../libs';
+import '../../libs/trix';
 
 import flatpickr from "flatpickr";
 import chart01 from "./components/chart-01";

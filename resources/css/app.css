@@ -1,6 +1,8 @@
 /* tailwindcss */
 @import "_tailwind.css";
 
+@import './_trix.css';
+
 ::-webkit-scrollbar {
   width: 10px;
 }

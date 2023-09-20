@@ -25,7 +25,7 @@ class CreatePostsTable extends Migration
             $table->text('image')->nullable();
             $table->text('image_description')->nullable();
             $table->text('excerpt');
-            $table->text('body');
+            $table->longText('body');
             $table->boolean('is_highlight');
             $table->boolean('publish_status');
             $table->boolean('comment_status');

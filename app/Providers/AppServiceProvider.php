@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\News;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Vite;
@@ -41,5 +43,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Model::preventLazyLoading(!app()->isProduction());
+
+        Relation::morphMap([
+            News::TABLE => News::class,
+        ]);
     }
 }

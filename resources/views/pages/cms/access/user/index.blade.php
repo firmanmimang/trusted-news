@@ -128,7 +128,7 @@
                   @method('DELETE')
                   <button type="submit" class="text-center block font-medium text-red-600 dark:text-red-500 hover:underline">Remove</button>
                 </form>
-            </td>
+              </td>
           </tr>
         @empty
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
