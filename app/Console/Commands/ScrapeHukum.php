@@ -12,21 +12,21 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 use Illuminate\Support\Str;
 
-class ScrapeCommand extends Command
+class ScrapeHukum extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'scrape {--count=}';
+    protected $signature = 'scrape:hukum {--count=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Scrape news from several news portal';
+    protected $description = 'Scrape news hukum from several news portal';
 
     /**
      * Execute the console command.
@@ -41,16 +41,28 @@ class ScrapeCommand extends Command
 
         $source_array = [
             'Detik',
-            'Viva',
-            'Kompas',
-            // 'Merdeka.com'
+            'Detik',
+            // 'Detik X',
+            // 'Detik X',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
         ];
 
         $url_sitemap_array = [
-            'https://finance.detik.com/energi/sitemap_news.xml',
-            'https://www.viva.co.id/sitemap/news/news-sitemap.xml',
-            'https://nasional.kompas.com/news/sitemap.xml',
-            // 'https://www.merdeka.com/sitemap.xml',
+            'https://news.detik.com/hukum/sitemap_news.xml',
+            'https://inet.detik.com/law-amp-policy/sitemap_news.xml',
+            // 'https://news.detik.com/x/crimestory/sitemap_news.xml',
+            // 'https://news.detik.com/x/investigasi/sitemap_news.xml',
+            'https://www.detik.com/jateng/hukum-dan-kriminal/sitemap_news.xml',
+            'https://www.detik.com/jatim/hukum-dan-kriminal/sitemap_news.xml',
+            'https://www.detik.com/jabar/hukum-dan-kriminal/sitemap_news.xml',
+            'https://www.detik.com/sulsel/hukum-dan-kriminal/sitemap_news.xml',
+            'https://www.detik.com/sumut/hukum-dan-kriminal/sitemap_news.xml',
+            'https://www.detik.com/bali/hukum-dan-kriminal/sitemap_news.xml',
         ];
 
         $this->info('crawl sitemap.xml news portal start...');
@@ -59,8 +71,13 @@ class ScrapeCommand extends Command
         foreach ($url_sitemap_array as $index => $url_sitemap_value) {
             try {
                 $source = $source_array[$index];
-                $dom->load($url_sitemap_value);
-                $url = $dom->getElementsByTagName('url');
+                try {
+                    $dom->load($url_sitemap_value);
+                    $url = $dom->getElementsByTagName('url');
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    $this->info("\n$url_sitemap_value tidak ditemukan");
+                }
                 $news = $dom->getElementsByTagName('news');
                 $i = 1;
                 foreach ($url as $key => $u) {
@@ -86,7 +103,7 @@ class ScrapeCommand extends Command
             } catch (\Throwable $th) {
                 throw $th;
                 $this->info("\nsomething went wrong when crawling sitemap.xml...");
-                return "sitemap tidak ada";
+                // return "sitemap tidak ada";
             }
 
             // try {
@@ -123,6 +140,7 @@ class ScrapeCommand extends Command
             $countInsert++;
 
             if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
+            if ($result->source == "Detik X") $page = $client->request('GET', $result->url . '?single=1');
             if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
             if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
             // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
@@ -131,6 +149,13 @@ class ScrapeCommand extends Command
             if ($result->source == "Detik") {
                 try {
                     $author =  count(explode('-', $page->filter('.detail__author')->text())) > 0 ? explode('-', $page->filter('.detail__author')->text())[0] :  null;
+                } catch (\Throwable $th) {
+                    $author = null;
+                }
+            }
+            if ($result->source == "Detik X") {
+                try {
+                    $author =  count(explode('-', $page->filter('.caption')->text())) > 0 ? trim(explode(':', $page->filter('.caption > p')->text())[1]) :  null;
                 } catch (\Throwable $th) {
                     $author = null;
                 }
@@ -165,6 +190,14 @@ class ScrapeCommand extends Command
                     $img = null;
                 }
             }
+            if ($result->source == "Detik X") {
+                try {
+                    $img = $page->filter('#headline img')->eq(0)->extract(['src', 'alt']);
+                    $img[0][0] = "$result->url/".$img[0][0];
+                } catch (\Throwable $th) {
+                    $img = null;
+                }
+            }
             if ($result->source == "Viva") {
                 try {
                     $img = $page->filter('.main-content-image .mci-frame img')->eq(0)->extract(['src', 'alt']);
@@ -192,6 +225,11 @@ class ScrapeCommand extends Command
             $body = [];
             if ($result->source == "Detik") {
                 $body[] = $page->filter('.detail__body-text')->each(function ($item) {
+                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $item->html());
+                });
+            }
+            if ($result->source == "Detik X") {
+                $body[] = $page->filter('.column.full.body_text')->each(function ($item) {
                     return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $item->html());
                 });
             }
@@ -229,11 +267,12 @@ class ScrapeCommand extends Command
                 if (!$newsScrapeExists) {
                     DB::beginTransaction();
                     $news = News::create([
-                        // 'category_id' => Category::where('name', $result->source)->first()->id,
+                        'category_id' => Category::where('name', 'Hukum')->first()->id,
+                        'category_crawl' => 'Hukum',
                         'is_crawl' => true,
                         'author_crawl' => trim($author),
                         'source_crawl' => trim($result->source),
-                        'title' => trim($result->title),
+                        'title' => News::generateExcerpt($result->title, 200),
                         'slug' => (new News())->uniqueSlug($result->title),
                         'image' => $img ? trim($img[0][0]) : null,
                         'image_description' => $img ? trim($img[0][1]) : null,
@@ -251,8 +290,8 @@ class ScrapeCommand extends Command
             } catch (\Throwable $th) {
                 DB::rollBack();
                 // throw $th;
-                $this->info("\n crawling news detail and inserting fail on ". $countInsert);
-                return 'gagal insert di percobaan ' . $countInsert;
+                $this->info("\n crawling news detail and inserting fail on ". $countInsert. " $result->url error $th");
+                // return 'gagal insert di percobaan ' . $countInsert;
             }
             $bar2->advance();
         }

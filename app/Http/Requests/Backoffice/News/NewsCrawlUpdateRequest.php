@@ -5,7 +5,7 @@ namespace App\Http\Requests\Backoffice\News;
 use App\Helpers\RegexHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class NewsStoreRequest extends FormRequest
+class NewsCrawlUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,9 @@ class NewsStoreRequest extends FormRequest
         return [
             'title' => ['required', 'string' ,'max:256'],
             'image_description' => ['nullable', 'string', 'max:256'],
-            'excerpt' => ['nullable', 'string', 'max:500'],
+            'excerpt' => ['nullable', 'string', 'max:250'],
             'description' => ["required", 'string', 'not_regex:'.RegexHelper::RTE_REGEX.''],
-            'image' => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:1024'],
+            'image' => request()->image ? ['required', 'image', 'mimes:jpeg,jpg,png', 'max:1024'] : [],
             'category' => ['required', 'numeric', 'exists:categories,id'],
             'publish_status'=> 'nullable|in:true',
             'comment_status'=> 'nullable|in:true',

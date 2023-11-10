@@ -1,7 +1,7 @@
 import "jsvectormap/dist/css/jsvectormap.css";
 import "flatpickr/dist/flatpickr.min.css";
 import "../../../css/cms.css";
-import '../../elements/turbo-echo-stream-tag';
+// import '../../elements/turbo-echo-stream-tag';
 import '../../libs';
 import '../../libs/trix';
 

@@ -1,5 +1,6 @@
 <div class="flex flex-col max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-  <a href="/{{$news->slug}}" class="overflow-hidden rounded-t-lg shrink-0 h-49">
+  <a href="/{{$news->slug}}" class="overflow-hidden rounded-t-lg shrink-0 h-49 relative">
+    <div class="absolute top-0 left-0 p-2 bg-gray-500/80 text-slate-50 text-sm rounded-br-lg">{{$news->category->name}}</div>
     @if ($news->is_crawl)
       <img src="{{ $news->image }}" alt="{{ $news->image_description ?? '' }}" class="object-cover w-full h-full">
     @else
@@ -18,12 +19,12 @@
         @if ($news->is_crawl)
           <span class="flex justify-between">
             <a class="dark:text-whiten line-clamp-1">by {{ $news->author_crawl }}</a>
-            <p class="shrink-0">{{ $news->published_at->format('d M Y') }}</p>
+            <p class="shrink-0">{{ $news->published_at?->format('d M Y') }}</p>
           </span>
         @else
             <span class="flex justify-between">
-              <a class="dark:text-whiten line-clamp-1" href="{{ route('search', ['author' => $news->author->username ?? null ]) }}">by {{ $news->author->name ?? '' }}</a>
-              <p class="shrink-0">{{ $news->updated_at->format('d M Y') }}</p>
+              <a class="dark:text-whiten line-clamp-1" href="{{ route('home', ['author' => $news->author->username ?? null ]) }}">by {{ $news->author->name ?? '' }}</a>
+              <p class="shrink-0">{{ $news->updated_at?->format('d M Y') }}</p>
             </span>
         @endif
       </small>

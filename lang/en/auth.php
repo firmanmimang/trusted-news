@@ -21,6 +21,7 @@ return [
         'login' => 'Hello :user, welcome to Trusted News. 🎉',
         'register' => 'Hello :user, thank you for joining Trusted News. 🎉',
         'logout' => 'You have been successfully logged out. 👋',
-    ]
+    ],
 
+    'unauthorize' => 'You don\'t have enough permission to sign in into this system.',
 ];

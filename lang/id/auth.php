@@ -20,5 +20,7 @@ return [
         'login' => 'Halo :user, selamat datang di Trusted News 🎉',
         'register' => 'Halo :user, terimakasih telah bergabung di Trusted News. 🎉',
         'logout' => 'Sampai berjumpa kembali. 👋',
-    ]
+    ],
+
+    'unauthorize' => 'Kamu tidak memiliki cukup otorisasi untuk masuk ke sistem ini.',
 ];

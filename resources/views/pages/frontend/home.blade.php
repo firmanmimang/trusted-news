@@ -18,7 +18,7 @@
           @endforelse
         </div>
         <div class="flex items-center justify-center py-8">
-          {{$news->onEachSide(0)->links('components.frontend.pagination')}}
+          {{$news->onEachSide(1)->links('components.frontend.pagination')}}
         </div>
       </turbo-frame>
     </section>

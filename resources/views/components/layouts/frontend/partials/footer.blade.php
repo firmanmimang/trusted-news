@@ -17,9 +17,9 @@
             <p class="font-semibold text-gray-800 dark:text-white">Tautan Singkat</p>
   
             <div class="flex flex-col items-start mt-5 space-y-2">
-                <a data-turbo-preload href="/" class="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Home</a>
-                <a data-turbo-preload href="/about" class="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Siapa kami</a>
-                <a data-turbo-preload href="/contact" class="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Kontak</a>
+                <a href="/" class="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Home</a>
+                <a href="/about" class="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Siapa kami</a>
+                <a href="/contact" class="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Kontak</a>
             </div>
         </div>
   

@@ -12,21 +12,21 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 use Illuminate\Support\Str;
 
-class ScrapeCommand extends Command
+class ScrapeKuliner extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'scrape {--count=}';
+    protected $signature = 'scrape:kuliner {--count=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Scrape news from several news portal';
+    protected $description = 'Scrape news kuliner from several news portal';
 
     /**
      * Execute the console command.
@@ -40,17 +40,43 @@ class ScrapeCommand extends Command
         $dom = new DOMDocument();
 
         $source_array = [
-            'Detik',
-            'Viva',
             'Kompas',
-            // 'Merdeka.com'
+
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
         ];
 
         $url_sitemap_array = [
-            'https://finance.detik.com/energi/sitemap_news.xml',
-            'https://www.viva.co.id/sitemap/news/news-sitemap.xml',
-            'https://nasional.kompas.com/news/sitemap.xml',
-            // 'https://www.merdeka.com/sitemap.xml',
+            'https://kilasfood.kompas.com/shopee-food/news/sitemap.xml',
+
+            'https://food.detik.com/resep/sitemap_news.xml',
+            'https://food.detik.com/tempat-makan/sitemap_news.xml',
+            'https://food.detik.com/kabar-kuliner/sitemap_news.xml',
+            'https://food.detik.com/makanan-anak/sitemap_news.xml',
+            'https://food.detik.com/sehat/sitemap_news.xml',
+            'https://food.detik.com/resep-odilia/sitemap_news.xml',
+            'https://food.detik.com/konsultasi/sitemap_news.xml',
+            'https://www.detik.com/jateng/kuliner/sitemap_news.xml',
+            'https://www.detik.com/jatim/kuliner/sitemap_news.xml',
+            'https://www.detik.com/jabar/kuliner/sitemap_news.xml',
+            'https://www.detik.com/sulsel/kuliner/sitemap_news.xml',
+            'https://www.detik.com/sumut/kuliner/sitemap_news.xml',
+            'https://www.detik.com/bali/kuliner/sitemap_news.xml',
+            'https://www.detik.com/sumbagsel/kuliner/sitemap_news.xml',
+            'https://www.detik.com/jogja/kuliner/sitemap_news.xml',
         ];
 
         $this->info('crawl sitemap.xml news portal start...');
@@ -59,8 +85,13 @@ class ScrapeCommand extends Command
         foreach ($url_sitemap_array as $index => $url_sitemap_value) {
             try {
                 $source = $source_array[$index];
-                $dom->load($url_sitemap_value);
-                $url = $dom->getElementsByTagName('url');
+                try {
+                    $dom->load($url_sitemap_value);
+                    $url = $dom->getElementsByTagName('url');
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    $this->info("\n$url_sitemap_value tidak ditemukan");
+                }
                 $news = $dom->getElementsByTagName('news');
                 $i = 1;
                 foreach ($url as $key => $u) {
@@ -86,7 +117,7 @@ class ScrapeCommand extends Command
             } catch (\Throwable $th) {
                 throw $th;
                 $this->info("\nsomething went wrong when crawling sitemap.xml...");
-                return "sitemap tidak ada";
+                // return "sitemap tidak ada";
             }
 
             // try {
@@ -229,11 +260,12 @@ class ScrapeCommand extends Command
                 if (!$newsScrapeExists) {
                     DB::beginTransaction();
                     $news = News::create([
-                        // 'category_id' => Category::where('name', $result->source)->first()->id,
+                        'category_id' => Category::where('name', 'Kuliner')->first()->id,
+                        'category_crawl' => 'Kuliner',
                         'is_crawl' => true,
                         'author_crawl' => trim($author),
                         'source_crawl' => trim($result->source),
-                        'title' => trim($result->title),
+                        'title' => News::generateExcerpt($result->title, 200),
                         'slug' => (new News())->uniqueSlug($result->title),
                         'image' => $img ? trim($img[0][0]) : null,
                         'image_description' => $img ? trim($img[0][1]) : null,
@@ -251,8 +283,8 @@ class ScrapeCommand extends Command
             } catch (\Throwable $th) {
                 DB::rollBack();
                 // throw $th;
-                $this->info("\n crawling news detail and inserting fail on ". $countInsert);
-                return 'gagal insert di percobaan ' . $countInsert;
+                $this->info("\n crawling news detail and inserting fail on ". $countInsert. " $result->url error $th");
+                // return 'gagal insert di percobaan ' . $countInsert;
             }
             $bar2->advance();
         }

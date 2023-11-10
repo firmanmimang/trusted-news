@@ -11,7 +11,7 @@
         @stack('javascriptNduwur')
     </head>
     <body
-        class="m-auto antialiased max-w-screen-2xl dark:text-white dark:bg-boxdark-2"
+        class="m-auto antialiased dark:text-white dark:bg-boxdark-2"
         x-data="{
             darkMode: (localStorage.getItem('darkMode') == 'true') || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
             toggleDarkMode() {

@@ -3,13 +3,13 @@
     <div class="w-full overflow-hidden h-150">
         @if ($news->is_crawl)
           @if ($news->image)
-            <img src="{{$news->image}}" alt="" class="object-cover w-full h-full mx-auto">
+            <img src="{{$news->image}}" alt="{{$news->title}} image" class="object-cover w-full h-full mx-auto">
           @else
             <img src="{{asset('assets/image/no_image_available.png')}}" alt="" class="object-cover w-full h-full mx-auto">
           @endif
         @else
           @if ($news->image)
-            <img src="{{asset('storage/' . $news->image)}}" alt="" class="w-full" class="object-cover w-full h-full mx-auto">
+            <img src="{{$news->image}}" alt="{{$news->title}} image" class="object-cover w-full h-full mx-auto">
           @else
             <img src="{{asset('assets/image/no_image_available.png')}}" alt="" class="object-cover w-full h-full mx-auto">
           @endif
@@ -31,11 +31,11 @@
           </small>
         @endif
         <small class="shrink-0">
-          {{ $news->published_at->format('d M Y') }}
+          {{ $news->published_at?->format('d M Y') }}
         </small>
       </div>
       <div class="my-4 text-justify news-body">
-        {!! $news->body !!}
+        {!! $news->body->render() !!}
       </div>
     </article>
     <turbo-frame id="comments">

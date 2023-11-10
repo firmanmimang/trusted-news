@@ -10,7 +10,7 @@ class RegexHelper {
     private const CONTAINS_SRC = '<[^>]+src\s*=\s*["\'][^"\']*["\'][^>]*>';
     private const IMG_IFRAME_TAG = '<(img|iframe)[^>]*>';
     
-    const RTE_REGEX = '/(' . self::SCRIPT_TAGS_REGEX . ')|(' . self::FUNCTION_REGEX . ')|(' . self::EVENT_ATTRIBUTES_REGEX . ')|(' . self::JAVASCRIPT_REGEX . ')|(' . self::CONTAINS_SRC . ')|(' . self::IMG_IFRAME_TAG . ')/i';
+    const RTE_REGEX = '/(' . self::SCRIPT_TAGS_REGEX . ')|(' . self::FUNCTION_REGEX . ')|(' . self::EVENT_ATTRIBUTES_REGEX . ')|(' . self::JAVASCRIPT_REGEX . ')/i';
     const INPUT_TEXT_REGEX = '/^[a-zA-Z0-9.,?\-!"\s:%\']+$/';
     const INPUT_PHONE_REGEX = '/^\d{9,13}$/';
 }

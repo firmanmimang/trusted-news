@@ -48,7 +48,7 @@
           </button>
 
           <input type="text" placeholder="Type to search..."
-            class="w-full pr-4 bg-transparent pl-9 focus:outline-none" />
+            class="w-full pr-4 bg-transparent border-0 pl-9 focus:outline-none focus:ring-0" />
         </div>
       </form>
     </div>

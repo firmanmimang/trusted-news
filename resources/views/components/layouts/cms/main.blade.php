@@ -10,6 +10,7 @@
 
   @vite(['resources/js/entry/cms/app.js', 'resources/css/cms.css'])
   @stack('javascriptNduwur')
+  @livewireStyles
 </head>
 
 <body 
@@ -28,5 +29,6 @@
     </div>
   </div>
   @stack('javascriptNgisor')
+  @livewireScripts
 </body>
 </html>

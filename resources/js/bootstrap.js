@@ -32,8 +32,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // });
 
 // echo dengan server sent event redis
-import Echo from 'laravel-echo';
+// import Echo from 'laravel-echo';
 
-import { WaveConnector } from 'laravel-wave';
+// import { WaveConnector } from 'laravel-wave';
 
-window.Echo = new Echo({ broadcaster: WaveConnector });
+// window.Echo = new Echo({ broadcaster: WaveConnector });

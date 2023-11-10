@@ -5,8 +5,10 @@ use App\Http\Controllers\Backoffice\Access\RoleController;
 use App\Http\Controllers\Backoffice\Access\UserController;
 use App\Http\Controllers\Backoffice\Auth\AuthenticateSessionController;
 use App\Http\Controllers\Backoffice\Category\CategoryController;
+use App\Http\Controllers\Backoffice\Classification\NewsClassification;
 use App\Http\Controllers\Backoffice\DashboardController;
 use App\Http\Controllers\Backoffice\News\NewsController;
+use App\Http\Controllers\Backoffice\News\NewsCrawlController;
 use App\Http\Controllers\Backoffice\Profile\ChangePasswordController;
 use App\Http\Controllers\Backoffice\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -224,7 +226,7 @@ if(config("cms.enable") && config("cms.path")){
             */
           Route::get('/', [NewsController::class, 'index'])->name('index');
           /**
-            * news in-house store
+            * news in-house create
             * route: CMS_PATH/news/in-house/create
             * name: cms.news.in-house.create
             * middleware: [auth:cms, role_or_permission:post management]
@@ -259,50 +261,41 @@ if(config("cms.enable") && config("cms.path")){
             */
           Route::delete('/{news}', [NewsController::class, 'destroy'])->name('delete');
         });
-        Route::group(['as'=> 'third-party.', 'prefix' => 'third-party'], function(){
+        Route::group(['as'=> 'crawl.', 'prefix' => 'crawl'], function(){
           /**
-            * news third-party index
-            * route: CMS_PATH/news/third-party
-            * name: cms.news.third-party.index
+            * news crawl index
+            * route: CMS_PATH/news/crawl
+            * name: cms.news.crawl.index
             * middleware: [auth:cms, role_or_permission:post management]
             */
-          Route::get('/', [NewsController::class, 'index'])->name('index');
+          Route::get('/', [NewsCrawlController::class, 'index'])->name('index');
           /**
-            * news third-party store
-            * route: CMS_PATH/news/third-party/create
-            * name: cms.news.third-party.create
+            * news crawl edit
+            * route: CMS_PATH/news/crawl/{news}
+            * name: cms.news.crawl.edit
             * middleware: [auth:cms, role_or_permission:post management]
             */
-          Route::get('/create', [NewsController::class, 'create'])->name('create');
+          Route::get('/{news}/edit', [NewsCrawlController::class, 'edit'])->name('edit');
           /**
-            * news third-party store
-            * route: CMS_PATH/news/third-party/
-            * name: cms.news.third-party.store
+            * news crawl update
+            * route: CMS_PATH/news/crawl/{news}
+            * name: cms.news.crawl.update
             * middleware: [auth:cms, role_or_permission:post management]
             */
-          Route::post('/', [NewsController::class, 'store'])->name('store');
+          Route::put('/{news}', [NewsCrawlController::class, 'update'])->name('update');
           /**
-            * news third-party update
-            * route: CMS_PATH/news/third-party/{news}
-            * name: cms.news.third-party.edit
+            * news crawl delete
+            * route: CMS_PATH/news/crawl/{news}
+            * name: cms.news.crawl.delete
             * middleware: [auth:cms, role_or_permission:post management]
             */
-          Route::get('/{news}/edit', [NewsController::class, 'edit'])->name('edit');
-          /**
-            * news third-party update
-            * route: CMS_PATH/news/third-party/{news}
-            * name: cms.news third-party.update
-            * middleware: [auth:cms, role_or_permission:post management]
-            */
-          Route::put('/{news}', [NewsController::class, 'update'])->name('update');
-          /**
-            * news third-party delete
-            * route: CMS_PATH/news/third-party/{news}
-            * name: cms.news third-party.delete
-            * middleware: [auth:cms, role_or_permission:post management]
-            */
-          Route::delete('/{news}', [NewsController::class, 'destroy'])->name('delete');
+          Route::delete('/{news}', [NewsCrawlController::class, 'destroy'])->name('delete');
         });
+      });
+
+      Route::group(['as'=> 'classification.', 'prefix' => 'classification'], function(){
+        Route::get('/', [NewsClassification::class, 'index'])->name('index');
+        Route::post('/', [NewsClassification::class, 'index'])->name('process');
       });
     });
 

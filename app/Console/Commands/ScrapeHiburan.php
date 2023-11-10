@@ -12,21 +12,21 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 use Illuminate\Support\Str;
 
-class ScrapeCommand extends Command
+class ScrapeHiburan extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'scrape {--count=}';
+    protected $signature = 'scrape:hiburan {--count=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Scrape news from several news portal';
+    protected $description = 'Scrape news hiburan from several news portal';
 
     /**
      * Execute the console command.
@@ -40,17 +40,87 @@ class ScrapeCommand extends Command
         $dom = new DOMDocument();
 
         $source_array = [
+            // 'Kompas',
+            // 'Kompas',
+            // 'Kompas',
+            // 'Kompas',
+            // 'Kompas',
+            // 'Kompas',
+            // 'Kompas',
+            // 'Kompas',
+            
+            // 'Detik',
+            // 'Detik',
+            // 'Detik',
+            // 'Detik',
             'Detik',
-            'Viva',
-            'Kompas',
-            // 'Merdeka.com'
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
+            'Detik',
         ];
 
         $url_sitemap_array = [
-            'https://finance.detik.com/energi/sitemap_news.xml',
-            'https://www.viva.co.id/sitemap/news/news-sitemap.xml',
-            'https://nasional.kompas.com/news/sitemap.xml',
-            // 'https://www.merdeka.com/sitemap.xml',
+            // 'https://travel.kompas.com/jalan-jalan/news/sitemap.xml',
+            // 'https://travel.kompas.com/itinerary/news/sitemap.xml',
+            // 'https://travel.kompas.com/travel-tips/news/sitemap.xml',
+            // 'https://travel.kompas.com/travel-promo/news/sitemap.xml',
+            // 'https://travel.kompas.com/jepang-terkini/news/sitemap.xml',
+            // 'https://entertainment.kompas.com/news/sitemap.xml',
+            // 'https://travel.kompas.com/travel-update/news/sitemap.xml',
+            // 'https://tekno.kompas.com/game/news/sitemap.xml',
+
+            // 'https://inet.detik.com/gamesnews/sitemap_news.xml',
+            // 'https://inet.detik.com/features/sitemap_news.xml',
+            // 'https://hot.detik.com/celebs/sitemap_news.xml',
+            // 'https://hot.detik.com/music/sitemap_news.xml',
+            'https://hot.detik.com/movie/sitemap_news.xml',
+            'https://hot.detik.com/culture/sitemap_news.xml',
+            'https://hot.detik.com/kpop/sitemap_news.xml',
+            'https://wolipop.detik.com/fashion/sitemap_news.xml',
+            'https://wolipop.detik.com/beauty/sitemap_news.xml',
+            'https://wolipop.detik.com/relationship/sitemap_news.xml',
+            'https://wolipop.detik.com/sale-and-shop/sitemap_news.xml',
+            'https://wolipop.detik.com/wedding/sitemap_news.xml',
+            'https://wolipop.detik.com/entertainment/sitemap_news.xml',
+            'https://wolipop.detik.com/work-and-money/sitemap_news.xml',
+            'https://wolipop.detik.com/living/sitemap_news.xml',
+            'https://wolipop.detik.com/hijab/sitemap_news.xml',
+            'https://wolipop.detik.com/horoscope/sitemap_news.xml',
+            'https://travel.detik.com/travel-news/sitemap_news.xml',
+            'https://travel.detik.com/destination/sitemap_news.xml',
+            'https://travel.detik.com/domestic-destination/sitemap_news.xml',
+            'https://travel.detik.com/international-destination/sitemap_news.xml',
+            'https://travel.detik.com/cerita-perjalanan/sitemap_news.xml',
+            'https://www.detik.com/jateng/wisata/sitemap_news.xml',
+            'https://www.detik.com/jatim/wisata/sitemap_news.xml',
+            'https://www.detik.com/jabar/wisata/sitemap_news.xml',
+            'https://www.detik.com/sulsel/wisata/sitemap_news.xml',
+            'https://www.detik.com/sumut/wisata/sitemap_news.xml',
+            'https://www.detik.com/bali/wisata/sitemap_news.xml',
+            'https://www.detik.com/sumbagsel/wisata/sitemap_news.xml',
+            'https://www.detik.com/jogja/plesir/sitemap_news.xml',
         ];
 
         $this->info('crawl sitemap.xml news portal start...');
@@ -59,8 +129,13 @@ class ScrapeCommand extends Command
         foreach ($url_sitemap_array as $index => $url_sitemap_value) {
             try {
                 $source = $source_array[$index];
-                $dom->load($url_sitemap_value);
-                $url = $dom->getElementsByTagName('url');
+                try {
+                    $dom->load($url_sitemap_value);
+                    $url = $dom->getElementsByTagName('url');
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    $this->info("\n$url_sitemap_value tidak ditemukan");
+                }
                 $news = $dom->getElementsByTagName('news');
                 $i = 1;
                 foreach ($url as $key => $u) {
@@ -86,7 +161,7 @@ class ScrapeCommand extends Command
             } catch (\Throwable $th) {
                 throw $th;
                 $this->info("\nsomething went wrong when crawling sitemap.xml...");
-                return "sitemap tidak ada";
+                // return "sitemap tidak ada";
             }
 
             // try {
@@ -122,10 +197,15 @@ class ScrapeCommand extends Command
         foreach ($results as $index => $result) {
             $countInsert++;
 
-            if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
-            if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
-            if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
-            // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            try {
+                if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
+                if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
+                if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
+                // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            } catch (\Throwable $th) {
+                //throw $th;
+                $this->info("\n request fail on ". $countInsert. " $result->url error $th");
+            }
 
             // crawl author
             if ($result->source == "Detik") {
@@ -229,35 +309,36 @@ class ScrapeCommand extends Command
                 if (!$newsScrapeExists) {
                     DB::beginTransaction();
                     $news = News::create([
-                        // 'category_id' => Category::where('name', $result->source)->first()->id,
+                        'category_id' => Category::where('name', 'Hiburan')->first()->id,
+                        'category_crawl' => 'Hiburan',
                         'is_crawl' => true,
                         'author_crawl' => trim($author),
                         'source_crawl' => trim($result->source),
-                        'title' => trim($result->title),
+                        'title' => News::generateExcerpt($result->title, 200),
                         'slug' => (new News())->uniqueSlug($result->title),
                         'image' => $img ? trim($img[0][0]) : null,
                         'image_description' => $img ? trim($img[0][1]) : null,
                         // 'excerpt' => Str::limit(strip_tags(trim($body[0][0])), 200),
-                        'excerpt' => News::generateExcerpt($body[0][0], 200),
+                        'excerpt' => isset($body[0][0]) ? News::generateExcerpt($body[0][0], 200) : 'kosong',
                         'is_highlight' => true,
                         'publish_status' => true,
                         'comment_status' => true,
                         'published_at' => Carbon::parse($result->date)->format('Y-m-d H:i:s'),
                     ]);
-                    $news->body = trim($body[0][0]);
+                    $news->body = isset($body[0][0]) ? trim($body[0][0]) : 'kosong';
                     $news->save();
                     DB::commit();
                 }
             } catch (\Throwable $th) {
                 DB::rollBack();
                 // throw $th;
-                $this->info("\n crawling news detail and inserting fail on ". $countInsert);
-                return 'gagal insert di percobaan ' . $countInsert;
+                $this->info("\n crawling news detail and inserting fail on ". $countInsert. " $result->url error $th");
+                // return 'gagal insert di percobaan ' . $countInsert;
             }
             $bar2->advance();
         }
         $bar2->finish();
-        $this->info("\n crawling news detail and inserting to database success...");
+        $this->info("\n crawling news detail and inserting to database finish...");
         return 1;
     }
 }

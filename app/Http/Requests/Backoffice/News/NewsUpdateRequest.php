@@ -27,7 +27,7 @@ class NewsUpdateRequest extends FormRequest
             'image_description' => ['nullable', 'string', 'max:256'],
             'excerpt' => ['nullable', 'string', 'max:500'],
             'description' => ["required", 'string', 'not_regex:'.RegexHelper::RTE_REGEX.''],
-            'image' => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:1024'],
+            'image' => request()->image ? ['required', 'image', 'mimes:jpeg,jpg,png', 'max:1024'] : [],
             'category' => ['required', 'numeric', 'exists:categories,id'],
             'publish_status'=> 'nullable|in:true',
             'comment_status'=> 'nullable|in:true',
