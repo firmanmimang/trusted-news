@@ -41,6 +41,13 @@ class ScrapeKuliner extends Command
 
         $source_array = [
             'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
+
+            'Kompas',
 
             'Detik',
             'Detik',
@@ -60,6 +67,13 @@ class ScrapeKuliner extends Command
         ];
 
         $url_sitemap_array = [
+            'https://www.kompas.com/food/resep/news/sitemap.xml',
+            'https://www.kompas.com/food/tips-kuliner/news/sitemap.xml',
+            'https://www.kompas.com/food/food-news/news/sitemap.xml',
+            'https://www.kompas.com/food/food-story/news/sitemap.xml',
+            'https://www.kompas.com/food/panduan-kuliner-yogyakarta/news/sitemap.xml',
+            'https://www.kompas.com/food/tempat-makan/news/sitemap.xml',
+
             'https://kilasfood.kompas.com/shopee-food/news/sitemap.xml',
 
             'https://food.detik.com/resep/sitemap_news.xml',
@@ -153,10 +167,15 @@ class ScrapeKuliner extends Command
         foreach ($results as $index => $result) {
             $countInsert++;
 
-            if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
-            if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
-            if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
-            // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            try {
+                if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
+                if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
+                if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
+                // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            } catch (\Throwable $th) {
+                //throw $th;
+                $this->info("\n request fail on ". $countInsert. " $result->url error $th");
+            }
 
             // crawl author
             if ($result->source == "Detik") {
@@ -270,13 +289,13 @@ class ScrapeKuliner extends Command
                         'image' => $img ? trim($img[0][0]) : null,
                         'image_description' => $img ? trim($img[0][1]) : null,
                         // 'excerpt' => Str::limit(strip_tags(trim($body[0][0])), 200),
-                        'excerpt' => News::generateExcerpt($body[0][0], 200),
+                        'excerpt' => isset($body[0][0]) ? News::generateExcerpt($body[0][0], 200) : 'kosong',
                         'is_highlight' => true,
                         'publish_status' => true,
                         'comment_status' => true,
                         'published_at' => Carbon::parse($result->date)->format('Y-m-d H:i:s'),
                     ]);
-                    $news->body = trim($body[0][0]);
+                    $news->body = isset($body[0][0]) ? trim($body[0][0]) : 'kosong';
                     $news->save();
                     DB::commit();
                 }

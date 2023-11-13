@@ -46,8 +46,8 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Sains dan Teknologi',
-                'slug' => Str::slug('Sains dan Teknologi'),
+                'name' => 'Teknologi',
+                'slug' => Str::slug('Teknologi'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

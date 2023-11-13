@@ -53,6 +53,7 @@ class ScrapePolitik extends Command
             'Kompas',
 
             'Viva',
+            'Viva',
 
             'Detik',
         ];
@@ -100,6 +101,7 @@ class ScrapePolitik extends Command
             // 'https://kilaskementerian.kompas.com/kemhan/news/sitemap.xml',
 
             'https://www.viva.co.id/sitemap/news/pilkada.xml',
+            'https://www.viva.co.id/sitemap/news/militer.xml',
 
             'https://news.detik.com/pemilu/sitemap_news.xml',
         ];
@@ -178,10 +180,15 @@ class ScrapePolitik extends Command
         foreach ($results as $index => $result) {
             $countInsert++;
 
-            if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
-            if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
-            if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
-            // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            try {
+                if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
+                if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
+                if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
+                // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            } catch (\Throwable $th) {
+                //throw $th;
+                $this->info("\n request fail on ". $countInsert. " $result->url error $th");
+            }
 
             // crawl author
             if ($result->source == "Detik") {

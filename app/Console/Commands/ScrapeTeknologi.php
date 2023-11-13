@@ -12,21 +12,21 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 use Illuminate\Support\Str;
 
-class ScrapeSainsTeknologi extends Command
+class ScrapeTeknologi extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'scrape:sains-teknologi {--count=}';
+    protected $signature = 'scrape:teknologi {--count=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Scrape news sains teknologi from several news portal';
+    protected $description = 'Scrape news teknologi from several news portal';
 
     /**
      * Execute the console command.
@@ -151,10 +151,15 @@ class ScrapeSainsTeknologi extends Command
         foreach ($results as $index => $result) {
             $countInsert++;
 
-            if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
-            if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
-            if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
-            // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            try {
+                if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
+                if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
+                if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
+                // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            } catch (\Throwable $th) {
+                //throw $th;
+                $this->info("\n request fail on ". $countInsert. " $result->url error $th");
+            }
 
             // crawl author
             if ($result->source == "Detik") {
@@ -258,8 +263,8 @@ class ScrapeSainsTeknologi extends Command
                 if (!$newsScrapeExists) {
                     DB::beginTransaction();
                     $news = News::create([
-                        'category_id' => Category::where('name', 'Sains dan Teknologi')->first()->id,
-                        'category_crawl' => 'Sains dan Teknologi',
+                        'category_id' => Category::where('name', 'Teknologi')->first()->id,
+                        'category_crawl' => 'Teknologi',
                         'is_crawl' => true,
                         'author_crawl' => trim($author),
                         'source_crawl' => trim($result->source),

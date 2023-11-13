@@ -43,6 +43,10 @@ class ScrapeOlahraga extends Command
             'Kompas',
             'Kompas',
             'Kompas',
+            
+            'Kompas',
+            'Kompas',
+            'Kompas',
             'Kompas',
             'Kompas',
             'Kompas',
@@ -72,6 +76,10 @@ class ScrapeOlahraga extends Command
         ];
 
         $url_sitemap_array = [
+            'https://www.kompas.com/sports/news/sitemap.xml',
+            'https://www.kompas.com/motogp/news/sitemap.xml',
+            'https://www.kompas.com/badminton/news/sitemap.xml',
+
             'https://bola.kompas.com/liga-indonesia/news/sitemap.xml',
             'https://bola.kompas.com/liga-inggris/news/sitemap.xml',
             'https://bola.kompas.com/liga-italia/news/sitemap.xml',

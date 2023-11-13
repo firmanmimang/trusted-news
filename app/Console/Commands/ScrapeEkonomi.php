@@ -41,6 +41,8 @@ class ScrapeEkonomi extends Command
 
         $source_array = [
             'Kompas',
+            
+            'Kompas',
             'Kompas',
             'Kompas',
             'Kompas',
@@ -86,6 +88,12 @@ class ScrapeEkonomi extends Command
         ];
 
         $url_sitemap_array = [
+            // 'https://www.kompas.com/properti/news/sitemap.xml',
+            // 'https://www.kompas.com/properti/hunian/news/sitemap.xml',
+            // 'https://www.kompas.com/properti/perumahan/news/sitemap.xml',
+            // 'https://www.kompas.com/properti/apartemen/news/sitemap.xml',
+            'https://www.kompas.com/properti/investasi-bisnis/news/sitemap.xml',
+
             'https://money.kompas.com/whats-new/news/sitemap.xml',
             'https://money.kompas.com/work-smart/news/sitemap.xml',
             'https://money.kompas.com/spend-smart/news/sitemap.xml',

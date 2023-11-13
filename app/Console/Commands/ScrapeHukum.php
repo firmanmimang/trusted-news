@@ -40,6 +40,10 @@ class ScrapeHukum extends Command
         $dom = new DOMDocument();
 
         $source_array = [
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            
             'Detik',
             'Detik',
             // 'Detik X',
@@ -53,6 +57,10 @@ class ScrapeHukum extends Command
         ];
 
         $url_sitemap_array = [
+            'https://www.kompas.com/konsultasihukum/konsultasi/news/sitemap.xml',
+            'https://www.kompas.com/konsultasihukum/analisis/news/sitemap.xml',
+            'https://www.kompas.com/konsultasihukum/database-peraturan/news/sitemap.xml',
+
             'https://news.detik.com/hukum/sitemap_news.xml',
             'https://inet.detik.com/law-amp-policy/sitemap_news.xml',
             // 'https://news.detik.com/x/crimestory/sitemap_news.xml',

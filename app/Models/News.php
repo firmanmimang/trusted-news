@@ -86,7 +86,7 @@ class News extends Model
 
     public static function generateExcerpt(string $string, $limit = 200):string
     {
-        return trim(Str::limit(preg_replace('/(&nbsp;|&amp;)/', ' ', strip_tags($string)), $limit));
+        return trim(Str::limit(preg_replace("/(&nbsp;|&amp;|amp;lt;i|amp;gt;|amp;lt;\/i|amp;|ampamp;|#039;|&lt;i&gt;|&lt;\/i&gt;|&lt;|&gt;|\'|&quot;)/", ' ', strip_tags($string))        , $limit));
     }
 
     public function category()

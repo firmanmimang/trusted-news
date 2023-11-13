@@ -47,6 +47,14 @@ class ScrapePendidikan extends Command
             'Kompas',
             'Kompas',
             'Kompas',
+
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
+            'Kompas',
             'Kompas',
             'Kompas',
             'Kompas',
@@ -75,6 +83,14 @@ class ScrapePendidikan extends Command
         ];
 
         $url_sitemap_array = [
+            'https://www.kompas.com/sains/oh-begitu/news/sitemap.xml',
+            'https://www.kompas.com/sains/kita/news/sitemap.xml',
+            'https://www.kompas.com/sains/halo-prof/news/sitemap.xml',
+            'https://www.kompas.com/sains/fenomena/news/sitemap.xml',
+            'https://www.kompas.com/sains/prof-cilik/news/sitemap.xml',
+            'https://www.kompas.com/skola/news/sitemap.xml',
+            'https://www.kompas.com/edu/edu/news/sitemap.xml',
+
             'https://kilaspendidikan.kompas.com/james-cook-university/news/sitemap.xml',
             'https://kilaspendidikan.kompas.com/universitas-tarumanagara/news/sitemap.xml',
             'https://kilaspendidikan.kompas.com/tanoto-foundation/news/sitemap.xml',
