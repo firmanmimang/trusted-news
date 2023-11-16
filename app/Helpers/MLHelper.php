@@ -47,4 +47,17 @@ class MLHelper
 
     return $dictionary;
   }
+
+  public static function calculateAccuracy($predictedCategories, $actualCategories)
+  {
+    $correct = 0;
+
+    foreach ($predictedCategories as $key => $predictedCategory) {
+      if ($predictedCategory === $actualCategories[$key]) {
+        $correct++;
+      }
+    }
+
+    return $correct / count($predictedCategories);
+  }
 }

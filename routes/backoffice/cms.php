@@ -296,6 +296,7 @@ if(config("cms.enable") && config("cms.path")){
       Route::group(['as'=> 'classification.', 'prefix' => 'classification'], function(){
         Route::get('/', [NewsClassification::class, 'index'])->name('index');
         Route::post('/', [NewsClassification::class, 'index'])->name('process');
+        Route::get('/train-naive-baiyes', [NewsClassification::class, 'trainNaiveBaiyes'])->name('train.naive-baiyes');
       });
     });
 
