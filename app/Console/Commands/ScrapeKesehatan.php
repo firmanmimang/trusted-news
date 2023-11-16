@@ -76,31 +76,31 @@ class ScrapeKesehatan extends Command
                 try {
                     $dom->load($url_sitemap_value);
                     $url = $dom->getElementsByTagName('url');
+                    $news = $dom->getElementsByTagName('news');
+                    $i = 1;
+                    foreach ($url as $key => $u) {
+    
+                        $url_artikel =  trim($u->childNodes->item(1)->nodeValue);
+    
+                        $n = $news[$key];
+    
+                        $name = $n->childNodes->item(1)->childNodes->item(1)->nodeValue;
+                        $date =  $n->childNodes->item(3)->nodeValue;
+                        $title =  $n->childNodes->item(5)->nodeValue;
+    
+                        $object = new stdClass();
+                        $object->url = $url_artikel;
+                        $object->source = $source;
+                        $object->title = $title;
+                        $object->date = $date;
+    
+                        $results[] = $object;
+    
+                        if ($i++ == $this->option('count')) break;
+                    }
                 } catch (\Throwable $th) {
                     //throw $th;
-                    $this->info("\n$url_sitemap_value tidak ditemukan");
-                }
-                $news = $dom->getElementsByTagName('news');
-                $i = 1;
-                foreach ($url as $key => $u) {
-
-                    $url_artikel =  trim($u->childNodes->item(1)->nodeValue);
-
-                    $n = $news[$key];
-
-                    $name = $n->childNodes->item(1)->childNodes->item(1)->nodeValue;
-                    $date =  $n->childNodes->item(3)->nodeValue;
-                    $title =  $n->childNodes->item(5)->nodeValue;
-
-                    $object = new stdClass();
-                    $object->url = $url_artikel;
-                    $object->source = $source;
-                    $object->title = $title;
-                    $object->date = $date;
-
-                    $results[] = $object;
-
-                    if ($i++ == $this->option('count')) break;
+                    $this->info("\n$url_sitemap_value gagal, error : $th");
                 }
             } catch (\Throwable $th) {
                 throw $th;

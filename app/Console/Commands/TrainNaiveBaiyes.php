@@ -20,7 +20,7 @@ class TrainNaiveBaiyes extends Command
      *
      * @var string
      */
-    protected $signature = 'train:naive-baiyes';
+    protected $signature = 'train:naive-bayes';
 
     /**
      * The console command description.
@@ -43,9 +43,23 @@ class TrainNaiveBaiyes extends Command
         $newsTesting = collect();
 
         foreach ($categories as $category) {
+            $limitTraining = 0;
+            if($category === 'Kesehatan'){
+                $limitTraining = 1000;
+            }
+            if($category === 'Hukum'){
+                $limitTraining = 1500;
+            }
+            if($category === 'Politik' || $category === 'Teknologi' || $category === 'Kuliner'){
+                $limitTraining = 2000;
+            }
+            if($category === 'Pendidikan' || $category === 'Otomotif' || $category === 'Olahraga' || $category === 'Hiburan' || $category === 'Ekonomi' ){
+                $limitTraining = 2200;
+            }
+
             $selectedNews = News::where('category_crawl', $category)
                 ->inRandomOrder()
-                ->limit($category === 'Kesehatan' ? 1000 : 1500)
+                ->limit($limitTraining)
                 ->get();
 
             $newsTraining = $newsTraining->merge($selectedNews);
@@ -55,7 +69,7 @@ class TrainNaiveBaiyes extends Command
                 News::where('category_crawl', $category)
                     ->whereNotIn('id', $selectedNews->pluck('id'))
                     ->inRandomOrder()
-                    ->limit(500)
+                    ->limit(100)
                     ->get()
             );
         }
@@ -79,17 +93,24 @@ class TrainNaiveBaiyes extends Command
         // $split = (int)(count($newsItems) * 0.8);
         // $trainingNews = array_slice($newsItems, 0, $split);
         // $testingNews = array_slice($newsItems, $split);
-        
-        
+
+        dump(count($titles));
+
+        // stemming
+        $stemWords = collect();
+        $stemmer = new \Sastrawi\Stemmer\Stemmer(MLHelper::stemDictionary());
+        foreach($titles as $title){
+            $stemWords = $stemWords->push($stemmer->stem( strtolower($title)));
+        }
         
         // Create a TokenCountVectorizer
         $vectorizer = new TokenCountVectorizer(new WhitespaceTokenizer(), new StopWords(MLHelper::INDONESIA_STOP_WORD));
         
         // Initialize variables to store vectorized titles and categories
         // $vectorizedTitles = collect([]);
-        $vectorizedTitles = $titles;
+        $vectorizedTitles = $stemWords->toArray();
         
-        dump(count($titles));
+        dump(count($stemWords->toArray()));
         
         $vectorizer->fit($vectorizedTitles);
         $vectorizer->transform($vectorizedTitles);
@@ -115,30 +136,50 @@ class TrainNaiveBaiyes extends Command
         dump(count($vectorizedTitles));
         // return 1;
 
-        $this->info('start make model train naive bayes');
+        $this->info('start vectorize data testing');
+        // Transform the testing titles using the same vectorizer
+        $vectorizedTestingTitles = $newsTesting->map(function($news) use($stemmer) {
+            return $stemmer->stem(strtolower($news->title));
+        })->toArray();
+
+        $vectorizer->transform($vectorizedTestingTitles);
+
+        dump("testing title" . count($vectorizedTestingTitles));
+        dump("testing category" . count($newsTesting->pluck('category_crawl')->toArray()));
+        $this->info('vetorize data testing complete');
+        
         // Create an ArrayDataset with the vectorized titles
         // $dataset = new ArrayDataset($vectorizedTitles->toArray(), $categories);
         $dataset = new ArrayDataset($vectorizedTitles, $categories);
-
-        // Train the Naive Bayes classifier
-        $classifier = new NaiveBayes();
-        $classifier->train($dataset->getSamples(), $dataset->getTargets());
-
-        $this->info('model training complete');
-
-        $this->info('start testing');
-        // Transform the testing titles using the same vectorizer
-        $vectorizedTestingTitles = $newsTesting->pluck('title')->take(10)->toArray();
-
-        $vectorizer->transform($vectorizedTestingTitles);
-        // Test the classifier
-        $predictedCategories = $classifier->predict($vectorizedTestingTitles);
-        $this->info('testing complete, start calculating the accuracy');
-
-        // Evaluate the accuracy
-        $accuracy = MLHelper::calculateAccuracy($predictedCategories, $newsTesting->pluck('category_crawl')->toArray());
-
-        $this->info("accuracy : $accuracy");
+        foreach(range(0,4) as $loop){
+            $this->info('start make model train naive bayes ke '. $loop);
+    
+            // Train the Naive Bayes classifier
+            $classifier = new NaiveBayes();
+            $classifier->train($dataset->getSamples(), $dataset->getTargets());
+    
+            $this->info('model training complete ' . $loop);
+    
+            // $titles = null; 
+            // unset($titles); 
+            // $stemWords = null; 
+            // unset($stemWords); 
+            // $vectorizedTitles = null; 
+            // unset($vectorizedTitles); 
+            // $categories = null; 
+            // unset($categories); 
+    
+            $this->info('start testing '. $loop);
+            
+            // Test the classifier
+            $predictedCategories = $classifier->predict($vectorizedTestingTitles);
+            $this->info('testing complete, start calculating the accuracy '. $loop);
+    
+            // Evaluate the accuracy
+            $accuracy = MLHelper::calculateAccuracy($predictedCategories, $newsTesting->pluck('category_crawl')->toArray());
+    
+            $this->info("accuracy : $accuracy ; ke $loop");
+        }
 
         return "Naive Bayes classifier trained. Accuracy: $accuracy";
     }
