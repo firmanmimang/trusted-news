@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('scrape --count=5')->everyTwoMinutes()->runInBackground();
+        // $schedule->command('scrape --count=5')->everyTwoMinutes()->runInBackground();
         $schedule->command('scrape:ekonomi --count=5')->everyTwoMinutes()->runInBackground();
         $schedule->command('scrape:hiburan --count=5')->everyTwoMinutes()->runInBackground();
         $schedule->command('scrape:hukum --count=5')->everyTwoMinutes()->runInBackground();
