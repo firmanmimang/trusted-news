@@ -11,6 +11,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 use Illuminate\Support\Str;
+use Phpml\ModelManager;
 
 class ScrapeCommand extends Command
 {
@@ -226,10 +227,13 @@ class ScrapeCommand extends Command
                     ['slug', Str::slug($result->title)],
                 ])->exists();
 
+                $modelManager = new ModelManager();
+                $model = $modelManager->restoreFromFile(storage_path("app\\naive-bayes-full.phpml"));
+                $prediction = $model->predict([trim($result->title)])[0];
                 if (!$newsScrapeExists) {
                     DB::beginTransaction();
                     $news = News::create([
-                        // 'category_id' => Category::where('name', $result->source)->first()->id,
+                        'category_id' => Category::where('name', $prediction)->first()->id,
                         'is_crawl' => true,
                         'author_crawl' => trim($author),
                         'source_crawl' => trim($result->source),
@@ -243,6 +247,7 @@ class ScrapeCommand extends Command
                         'publish_status' => true,
                         'comment_status' => true,
                         'published_at' => Carbon::parse($result->date)->format('Y-m-d H:i:s'),
+                        'categoryByModel' => true,
                     ]);
                     $news->body = trim($body[0][0]);
                     $news->save();

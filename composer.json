@@ -8,7 +8,6 @@
         "php": "^8.1",
         "google/apiclient": "^2.15",
         "guzzlehttp/guzzle": "^7.2",
-        "hotwired-laravel/turbo-laravel": "2.x-dev",
         "hotwired/turbo-laravel": "^1.12",
         "jenssegers/agent": "^2.6",
         "juanantoniodelgado/stopwords": "^1.3",

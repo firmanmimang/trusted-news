@@ -3,15 +3,24 @@
 namespace App\Console\Commands;
 
 use App\Helpers\MLHelper;
+use App\Models\Category;
 use App\Models\News;
+use App\Models\VectorizeNews;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 use Phpml\Classification\NaiveBayes;
+use Phpml\CrossValidation\StratifiedRandomSplit;
 use Phpml\Dataset\ArrayDataset;
 use Phpml\FeatureExtraction\StopWords;
+use Phpml\FeatureExtraction\TfIdfTransformer;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
+use Phpml\Metric\Accuracy;
+use Phpml\Metric\ClassificationReport;
+use Phpml\Metric\ConfusionMatrix;
+use Phpml\ModelManager;
 use Phpml\Pipeline;
-use Phpml\Serializer\JSON;
-use Phpml\Tokenization\WhitespaceTokenizer;
+use Phpml\Tokenization\NGramTokenizer;
+use Phpml\Tokenization\WordTokenizer;
 
 class TrainNaiveBaiyes extends Command
 {
@@ -34,152 +43,155 @@ class TrainNaiveBaiyes extends Command
      */
     public function handle()
     {
-        // Fetch news data from the database 1500 of each category
-        $categories = News::select('category_crawl')
-            ->distinct()
-            ->pluck('category_crawl');
+        $this->info('start execute modeling naive bayes');
+        // $modelManager = new ModelManager();
+        // $model = $modelManager->restoreFromFile(storage_path("app\\naive-bayes-full.phpml"));
 
-        $newsTraining = collect();
-        $newsTesting = collect();
+        // $text = 'Sudah Tahu Belum Siapa Menteri Keuangan Pertama RI? Ini Sosoknya'; // or load it from request, api, cli, etc.
+
+        // dump($text);
+        // dd($model->predict([$text]));
+        
+        // Fetch news category
+        $start = now();
+
+        $categories = Category::get()->pluck('name');
+
+        $news = collect();
 
         foreach ($categories as $category) {
             $limitTraining = 0;
             if($category === 'Kesehatan'){
-                $limitTraining = 1000;
+                $limitTraining = 500;
             }
             if($category === 'Hukum'){
-                $limitTraining = 1500;
+                // $limitTraining = 2100;
+                $limitTraining = 500;
             }
-            if($category === 'Politik' || $category === 'Teknologi' || $category === 'Kuliner'){
-                $limitTraining = 2000;
+            if($category === 'Kuliner'){
+                // $limitTraining = 2300;
+                $limitTraining = 500;
             }
-            if($category === 'Pendidikan' || $category === 'Otomotif' || $category === 'Olahraga' || $category === 'Hiburan' || $category === 'Ekonomi' ){
-                $limitTraining = 2200;
+            if($category === 'Politik' || $category === 'Teknologi'){
+                // $limitTraining = 2500;
+                $limitTraining = 500;
+            }
+            if($category === 'Pendidikan' || $category === 'Otomotif'){
+                // $limitTraining = 3500;
+                $limitTraining = 500;
+            }
+            if($category === 'Ekonomi' ){
+                // $limitTraining = 4000;
+                $limitTraining = 500;
+            }
+            if($category === 'Hiburan'){
+                // $limitTraining = 4500;
+                $limitTraining = 500;
+            }
+            if($category === 'Olahraga'){
+                // $limitTraining = 5900;
+                $limitTraining = 500;
             }
 
-            $selectedNews = News::where('category_crawl', $category)
-                ->inRandomOrder()
+            $selectedNews = VectorizeNews::where('category', $category)
                 ->limit($limitTraining)
                 ->get();
 
-            $newsTraining = $newsTraining->merge($selectedNews);
+            // dump(count($selectedNews->toArray()));
 
-            // Select additional news not in the filtered set
-            $newsTesting = $newsTesting->merge(
-                News::where('category_crawl', $category)
-                    ->whereNotIn('id', $selectedNews->pluck('id'))
-                    ->inRandomOrder()
-                    ->limit(100)
-                    ->get()
-            );
+            $news = $news->merge($selectedNews);
+
         }
 
-        // dump('ekonomi ' . $newsTesting->where('category_crawl', 'Ekonomi')->count());
-        // dump('hiburan ' . $newsTesting->where('category_crawl', 'Hiburan')->count());
-        // dump('hukum ' . $newsTesting->where('category_crawl', 'Hukum')->count());
-        // dump('kesehatan ' . $newsTesting->where('category_crawl', 'Kesehatan')->count());
-        // dump('kuliner ' . $newsTesting->where('category_crawl', 'Kuliner')->count());
-        // dump('olahraga ' . $newsTesting->where('category_crawl', 'Olahraga')->count());
-        // dump('otomotif ' . $newsTesting->where('category_crawl', 'Otomotif')->count());
-        // dump('pendidikan ' . $newsTesting->where('category_crawl', 'Pendidikan')->count());
-        // dump('politik ' . $newsTesting->where('category_crawl', 'Politik')->count());
-        // dump('teknologi ' . $newsTesting->where('category_crawl', 'Teknologi')->count());
-        // dump('total ' . $newsTesting->count());
-        // return 1;
-        $titles = $newsTraining->pluck('title')->toArray();
-        $categories = $newsTraining->pluck('category_crawl')->toArray();
+        // $news = VectorizeNews::get();
+    
+        // Create an ArrayDataset
+        $this->info('create dataset');
+        $dataset = new ArrayDataset($news->pluck('title')->toArray(), $news->pluck('category')->toArray());
+
+        $this->info('split train and test samples');
+        $split = new StratifiedRandomSplit($dataset, 0.2);
+        $samples = $split->getTrainSamples();
+
+        $this->info("train " . count($split->getTrainSamples()));
+        $this->info("test " . count($split->getTestSamples()));
         
-        // Split the data into training and testing sets
-        // $split = (int)(count($newsItems) * 0.8);
-        // $trainingNews = array_slice($newsItems, 0, $split);
-        // $testingNews = array_slice($newsItems, $split);
-
-        dump(count($titles));
-
-        // stemming
-        $stemWords = collect();
         $stemmer = new \Sastrawi\Stemmer\Stemmer(MLHelper::stemDictionary());
-        foreach($titles as $title){
+        $this->info('stem news training');
+        $stemWords = collect();
+        $stemTestWords = collect();
+        foreach($samples as $title){
             $stemWords = $stemWords->push($stemmer->stem( strtolower($title)));
+        }
+        foreach($split->getTestSamples() as $title){
+            $stemTestWords = $stemTestWords->push($stemmer->stem( strtolower($title)));
         }
         
         // Create a TokenCountVectorizer
-        $vectorizer = new TokenCountVectorizer(new WhitespaceTokenizer(), new StopWords(MLHelper::INDONESIA_STOP_WORD));
+        // $vectorizer = new TokenCountVectorizer(new WordTokenizer(), new StopWords(MLHelper::INDONESIA_STOP_WORD));
+        // $this->info('vectorize train');
+        // $vectorizer->fit($samples);
+        // $vectorizer->transform($samples);
+
+        // $this->info('start vectorize data testing');
+        // // Transform the testing titles using the same vectorizer
+        // $vectorizedTestingTitles = $newsTesting->map(function($news) use($stemmer) {
+        //     return $stemmer->stem(strtolower($news->title));
+        // })->toArray();
+
+        // $vectorizer->fit($vectorizedTestingTitles);
+        // $vectorizer->transform($vectorizedTestingTitles);
+
+        // dump("testing title" . count($vectorizedTestingTitles));
+        // dump("testing category" . count($newsTesting->pluck('category_crawl')->toArray()));
+        // dump($vectorizedTestingTitles[0]);
+        // $this->info('vetorize data testing complete');
         
-        // Initialize variables to store vectorized titles and categories
-        // $vectorizedTitles = collect([]);
-        $vectorizedTitles = $stemWords->toArray();
+        $startTrain = now();
+        $this->info('start make model train naive bayes');
+        $pipeline = new Pipeline([
+            new TokenCountVectorizer(new WordTokenizer(), new StopWords(MLHelper::INDONESIA_STOP_WORD)),
+            new TfIdfTransformer()
+        ], new NaiveBayes());
+        $pipeline->train($stemWords->toArray(), $split->getTrainLabels());
+        $this->info('training time : '. $startTrain->diffInSeconds(now()) . " seconds");
+
+        $startTest = now();
+        $this->info('start testing');
+        $predicted = $pipeline->predict($stemTestWords->toArray());
+
+        $this->info('testing complete, start calculating the accuracy');
+        $this->info('testing time : '. $startTest->diffInSeconds(now()) . " seconds");
+
+        $text = 'Produksi Pisang di Desa Mekarbuana Karawang Capai 14 Ton/Hari'; // or load it from request, api, cli, etc.
+
+        dump($text);
+        dump($pipeline->predict([$text]));
         
-        dump(count($stemWords->toArray()));
-        
-        $vectorizer->fit($vectorizedTitles);
-        $vectorizer->transform($vectorizedTitles);
-        
-        // $chunkSize = 1000;
-        // Iterate over the data in chunks
-        // for ($i = 0; $i < count($titles); $i += $chunkSize) {
-        // // for ($i = 0; $i < 15000; $i += $chunkSize) {
-        //     $chunkTitles = array_slice($titles, $i, $chunkSize);
+        $accuracy = Accuracy::score($split->getTestLabels(), $predicted);
+        $report = new ClassificationReport($split->getTestLabels(), $predicted);
+        $confusionMatrix = ConfusionMatrix::compute($split->getTestLabels(), $predicted);
 
-        //     $arrayTitles = $chunkTitles;
-            
-        //     // Fit the vectorizer and transform the chunk
-        //     $vectorizer->fit($arrayTitles);
-        //     $vectorizer->transform($arrayTitles);
+        $this->info('execution time : '. $start->diffInSeconds(now()) . " seconds");
 
-        //     // Append vectorized data to the arrays
-        //     $vectorizedTitles = $vectorizedTitles->merge($arrayTitles);
-        //     $this->info(memory_get_usage(true));
-        // }
+        dump('accuracy');
+        dump($accuracy);
+        dump('precision');
+        dump($report->getPrecision());
+        dump('recall');
+        dump($report->getRecall());
+        dump('f1 score');
+        dump($report->getF1score());
+        dump('support');
+        dump($report->getSupport());
+        dump('average');
+        dump($report->getAverage());
+        dump('confussion matrix');
+        dump($confusionMatrix);
 
-        // dump(count($vectorizedTitles->toArray()));
-        dump(count($vectorizedTitles));
-        // return 1;
-
-        $this->info('start vectorize data testing');
-        // Transform the testing titles using the same vectorizer
-        $vectorizedTestingTitles = $newsTesting->map(function($news) use($stemmer) {
-            return $stemmer->stem(strtolower($news->title));
-        })->toArray();
-
-        $vectorizer->transform($vectorizedTestingTitles);
-
-        dump("testing title" . count($vectorizedTestingTitles));
-        dump("testing category" . count($newsTesting->pluck('category_crawl')->toArray()));
-        $this->info('vetorize data testing complete');
-        
-        // Create an ArrayDataset with the vectorized titles
-        // $dataset = new ArrayDataset($vectorizedTitles->toArray(), $categories);
-        $dataset = new ArrayDataset($vectorizedTitles, $categories);
-        foreach(range(0,4) as $loop){
-            $this->info('start make model train naive bayes ke '. $loop);
-    
-            // Train the Naive Bayes classifier
-            $classifier = new NaiveBayes();
-            $classifier->train($dataset->getSamples(), $dataset->getTargets());
-    
-            $this->info('model training complete ' . $loop);
-    
-            // $titles = null; 
-            // unset($titles); 
-            // $stemWords = null; 
-            // unset($stemWords); 
-            // $vectorizedTitles = null; 
-            // unset($vectorizedTitles); 
-            // $categories = null; 
-            // unset($categories); 
-    
-            $this->info('start testing '. $loop);
-            
-            // Test the classifier
-            $predictedCategories = $classifier->predict($vectorizedTestingTitles);
-            $this->info('testing complete, start calculating the accuracy '. $loop);
-    
-            // Evaluate the accuracy
-            $accuracy = MLHelper::calculateAccuracy($predictedCategories, $newsTesting->pluck('category_crawl')->toArray());
-    
-            $this->info("accuracy : $accuracy ; ke $loop");
-        }
+        $this->info('store model training');
+        $modelManager = new ModelManager();
+        $modelManager->saveToFile($pipeline, storage_path("app\\naive-bayes.phpml"));
 
         return "Naive Bayes classifier trained. Accuracy: $accuracy";
     }

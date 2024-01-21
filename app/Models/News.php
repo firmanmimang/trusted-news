@@ -7,6 +7,7 @@ use App\Traits\ModelHelpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use Tonysm\RichTextLaravel\Casts\AsRichTextContent;
 use Tonysm\RichTextLaravel\Models\Traits\HasRichText;
@@ -30,6 +31,7 @@ class News extends Model
         'comment_status' => 'boolean',
         'is_highlight' => 'boolean',
         'is_crawl' => 'boolean',
+        'categoryByModel' => 'boolean',
         'published_at' => 'datetime',
         'body' => AsRichTextContent::class,
     ];
@@ -102,6 +104,11 @@ class News extends Model
     public function comments():HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function vetorize_news():HasOne
+    {
+        return $this->hasOne(VectorizeNews::class, 'news_id', 'id');
     }
 
     //ambil slug scr default
