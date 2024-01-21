@@ -318,7 +318,7 @@ class ScrapeEkonomi extends Command
 
             try {
                 $newsScrapeExists = News::where([
-                    ['title', trim($result->title)],
+                    ['title', trim(News::generateExcerpt($result->title, 200))],
                     ['slug', Str::slug($result->title)],
                 ])->exists();
 
