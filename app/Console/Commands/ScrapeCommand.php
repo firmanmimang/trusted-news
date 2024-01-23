@@ -227,10 +227,12 @@ class ScrapeCommand extends Command
                     ['slug', Str::slug($result->title)],
                 ])->exists();
 
-                $modelManager = new ModelManager();
-                $model = $modelManager->restoreFromFile(storage_path("app\\naive-bayes-full.phpml"));
-                $prediction = $model->predict([trim($result->title)])[0];
                 if (!$newsScrapeExists) {
+
+                    $modelManager = new ModelManager();
+                    $model = $modelManager->restoreFromFile(storage_path("app\\naive-bayes-full.phpml"));
+                    $prediction = $model->predict([trim($result->title)])[0];
+
                     DB::beginTransaction();
                     $news = News::create([
                         'category_id' => Category::where('name', $prediction)->first()->id,

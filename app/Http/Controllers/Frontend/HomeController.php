@@ -11,12 +11,13 @@ use App\Jobs\Frontend\UpdateComment;
 use App\Models\Comment;
 use App\Models\News;
 use App\Policies\CommentPolicy;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
-    public function __invoke()
+    public function __invoke($lang=null)
     {
         return view('pages.frontend.home', [
             'news' => News::where('publish_status', true)

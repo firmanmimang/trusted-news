@@ -44,13 +44,6 @@ class TrainNaiveBaiyes extends Command
     public function handle()
     {
         $this->info('start execute modeling naive bayes');
-        // $modelManager = new ModelManager();
-        // $model = $modelManager->restoreFromFile(storage_path("app\\naive-bayes-full.phpml"));
-
-        // $text = 'Sudah Tahu Belum Siapa Menteri Keuangan Pertama RI? Ini Sosoknya'; // or load it from request, api, cli, etc.
-
-        // dump($text);
-        // dd($model->predict([$text]));
         
         // Fetch news category
         $start = now();

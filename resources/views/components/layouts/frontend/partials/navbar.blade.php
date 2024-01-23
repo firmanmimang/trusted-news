@@ -20,7 +20,7 @@
       <ul class="flex flex-col gap-5 mb-5 lg:flex-row lg:items-center lg:gap-2 grow lg:mb-0">
         <li>
           <a data-turbo-preload class="{{ request()->is('/') ? 'dark:!bg-gray-600 dark:!text-white !text-gray-900 !bg-gray-200' : '' }} px-4 py-2.5 mt-2 text-sm font-semibold bg-transparent rounded-lg dark:bg-transparent dark:hover:bg-gray-600 dark:focus:bg-gray-600 dark:focus:text-white dark:hover:text-white dark:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline transition duration-300"
-            href="/">Beranda</a>
+            href="/">{{__('message.home')}}</a>
         </li>
         <li>
           <a data-turbo-preload class="{{ request()->is('about') ? 'dark:!bg-gray-600 dark:!text-white !text-gray-900 !bg-gray-200' : '' }} px-4 py-2.5 mt-2 text-sm font-semibold transition duration-300 bg-transparent rounded-lg dark:bg-transparent dark:hover:bg-gray-600 dark:focus:bg-gray-600 dark:focus:text-white dark:hover:text-white dark:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
