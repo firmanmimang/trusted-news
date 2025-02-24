@@ -18,12 +18,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('scrape:hiburan --count=5')->everyTwoMinutes()->runInBackground();
         $schedule->command('scrape:hukum --count=5')->everyTwoMinutes()->runInBackground();
         $schedule->command('scrape:kesehatan --count=5')->everyTwoMinutes()->runInBackground();
-        $schedule->command('scrape:kuliner --count=5')->everyTwoMinutes()->runInBackground();
-        $schedule->command('scrape:olahraga --count=5')->everyTwoMinutes()->runInBackground();
-        $schedule->command('scrape:otomotif --count=5')->everyTwoMinutes()->runInBackground();
-        $schedule->command('scrape:pendidikan --count=5')->everyTwoMinutes()->runInBackground();
+        // $schedule->command('scrape:kuliner --count=5')->everyTwoMinutes()->runInBackground();
+        // $schedule->command('scrape:olahraga --count=5')->everyTwoMinutes()->runInBackground();
+        // $schedule->command('scrape:otomotif --count=5')->everyTwoMinutes()->runInBackground();
+        // $schedule->command('scrape:pendidikan --count=5')->everyTwoMinutes()->runInBackground();
         $schedule->command('scrape:politik --count=5')->everyTwoMinutes()->runInBackground();
-        $schedule->command('scrape:teknologi --count=5')->everyTwoMinutes()->runInBackground();
+        // $schedule->command('scrape:teknologi --count=5')->everyTwoMinutes()->runInBackground();
     }
 
     /**

@@ -1048,7 +1048,7 @@ class DictionarySeeder extends Seeder
         foreach ($politicalDictionary as $word => $data) {
             $category = $data[0];
             $gram = $data[1];
-            $special = isset($data[2]) ? $data[2] : false;
+            $special = isset($data[2]) ? $data[2] : 'false';
             
             $dataToInsert[] = [
                 'word' => $word,
@@ -1063,7 +1063,7 @@ class DictionarySeeder extends Seeder
         foreach ($lawDictionary as $word => $data) {
             $category = $data[0];
             $gram = $data[1];
-            $special = isset($data[2]) ? $data[2] : false;
+            $special = isset($data[2]) ? $data[2] : 'false';
             
             $dataToInsert[] = [
                 'word' => $word,
@@ -1078,7 +1078,7 @@ class DictionarySeeder extends Seeder
         foreach ($economyDictionary as $word => $data) {
             $category = $data[0];
             $gram = $data[1];
-            $special = isset($data[2]) ? $data[2] : false;
+            $special = isset($data[2]) ? $data[2] : 'false';
             
             $dataToInsert[] = [
                 'word' => $word,
@@ -1093,7 +1093,7 @@ class DictionarySeeder extends Seeder
         foreach ($sainsTeknologiDictionary as $word => $data) {
             $category = $data[0];
             $gram = $data[1];
-            $special = isset($data[2]) ? $data[2] : false;
+            $special = isset($data[2]) ? $data[2] : 'false';
             
             $dataToInsert[] = [
                 'word' => $word,
@@ -1108,7 +1108,7 @@ class DictionarySeeder extends Seeder
         foreach ($hiburan as $word => $data) {
             $category = $data[0];
             $gram = $data[1];
-            $special = isset($data[2]) ? $data[2] : false;
+            $special = isset($data[2]) ? $data[2] : 'false';
             
             $dataToInsert[] = [
                 'word' => $word,

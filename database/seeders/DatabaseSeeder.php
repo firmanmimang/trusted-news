@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
 
-            DictionarySeeder::class,
+            // DictionarySeeder::class,
         ]);
 
         Category::insert([

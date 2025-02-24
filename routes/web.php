@@ -12,17 +12,17 @@ use App\Http\Controllers\Frontend\RegisterController;
 use App\Http\Middleware\Localization;
 use Illuminate\Support\Facades\Route;
 
-Route::domain('{lang}.tb-smartweb-v3.io')->group(function () {
-      Route::group(['middleware' => [Localization::class]], function () {
-            Route::get('/', HomeController::class)->name('home');
-            Route::get('/about', AboutController::class)->name('about');
-      });
-});
+// Route::domain('{lang}.tb-smartweb-v3.io')->group(function () {
+      // Route::group(['middleware' => [Localization::class]], function () {
+            // Route::get('/', HomeController::class)->name('home');
+            // Route::get('/about', AboutController::class)->name('about');
+      // });
+// });
 
 require __DIR__.'/backoffice/cms.php';
 
-// Route::get('/', HomeController::class)->name('home');
-Route::get('/about', AboutController::class)->name('home');
+Route::get('/', HomeController::class)->name('home');
+Route::get('/about', AboutController::class)->name('about');
 Route::get('/contact', ContactController::class)->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/guest', GuestBookController::class)->name('guest');

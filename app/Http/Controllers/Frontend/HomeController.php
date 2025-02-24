@@ -20,7 +20,7 @@ class HomeController extends Controller
     public function __invoke($lang=null)
     {
         return view('pages.frontend.home', [
-            'news' => News::where('publish_status', true)
+            'news' => News::publish()
                         ->filter(request(['q', 's', 'category', 'author']))
                         ->orderBy('published_at', 'DESC')
                         ->paginate(12)

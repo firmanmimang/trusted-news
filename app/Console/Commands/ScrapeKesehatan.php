@@ -6,11 +6,12 @@ use App\Models\Category;
 use App\Models\News;
 use Carbon\Carbon;
 use DOMDocument;
-use Goutte\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 use Illuminate\Support\Str;
+use Symfony\Component\DomCrawler\Crawler;
 
 class ScrapeKesehatan extends Command
 {
@@ -26,7 +27,7 @@ class ScrapeKesehatan extends Command
      *
      * @var string
      */
-    protected $description = 'Scrape news kesehatan from several news portal';
+    protected $description = 'Scrape news kesehatan from several news portals';
 
     /**
      * Execute the console command.
@@ -36,13 +37,12 @@ class ScrapeKesehatan extends Command
     public function handle()
     {
         $results = [];
-        $client = new Client();
+        $client = new GuzzleClient();
         $dom = new DOMDocument();
 
         $source_array = [
             'Kompas',
             'Kompas',
-
             'Detik',
             'Detik',
             'Detik',
@@ -56,7 +56,6 @@ class ScrapeKesehatan extends Command
         $url_sitemap_array = [
             'https://health.kompas.com/health/news/sitemap.xml',
             'https://health.kompas.com/penyakit/news/sitemap.xml',
-
             'https://health.detik.com/health-news/sitemap_news.xml',
             'https://health.detik.com/diet/sitemap_news.xml',
             'https://health.detik.com/konsultasi/sitemap_news.xml',
@@ -67,217 +66,216 @@ class ScrapeKesehatan extends Command
             'https://health.detik.com/bank-obat-dan-penyakit/sitemap_news.xml',
         ];
 
-        $this->info('crawl sitemap.xml news portal start...');
+        $this->info('Crawling sitemap.xml news portals start...');
         $bar1 = $this->output->createProgressBar(count($url_sitemap_array));
         $bar1->start();
         foreach ($url_sitemap_array as $index => $url_sitemap_value) {
             try {
                 $source = $source_array[$index];
                 try {
-                    $dom->load($url_sitemap_value);
-                    $url = $dom->getElementsByTagName('url');
-                    $news = $dom->getElementsByTagName('news');
+                    @$dom->load($url_sitemap_value);
+                    $urlNodes = $dom->getElementsByTagName('url');
+                    $newsNodes = $dom->getElementsByTagName('news');
                     $i = 1;
-                    foreach ($url as $key => $u) {
-    
-                        $url_artikel =  trim($u->childNodes->item(1)->nodeValue);
-    
-                        $n = $news[$key];
-    
+                    foreach ($urlNodes as $key => $u) {
+                        $url_artikel = trim($u->childNodes->item(1)->nodeValue);
+                        $n = $newsNodes[$key];
                         $name = $n->childNodes->item(1)->childNodes->item(1)->nodeValue;
-                        $date =  $n->childNodes->item(3)->nodeValue;
-                        $title =  $n->childNodes->item(5)->nodeValue;
-    
+                        $date = $n->childNodes->item(3)->nodeValue;
+                        $title = $n->childNodes->item(5)->nodeValue;
+
                         $object = new stdClass();
                         $object->url = $url_artikel;
                         $object->source = $source;
                         $object->title = $title;
                         $object->date = $date;
-    
+
                         $results[] = $object;
-    
                         if ($i++ == $this->option('count')) break;
                     }
                 } catch (\Throwable $th) {
-                    //throw $th;
-                    $this->info("\n$url_sitemap_value gagal, error : $th");
+                    $this->info("\n$url_sitemap_value gagal, error: $th");
                 }
             } catch (\Throwable $th) {
-                throw $th;
-                $this->info("\nsomething went wrong when crawling sitemap.xml...");
-                // return "sitemap tidak ada";
+                $this->info("\nSomething went wrong when crawling sitemap.xml...");
+                continue;
             }
-
-            // try {
-            //     $categoryScrapeExists = Category::where([
-            //         ['name', $source_array[$index]],
-            //         ['slug', Str::slug($source_array[$index])],
-            //     ])->exists();
-
-            //     if (!$categoryScrapeExists) {
-            //         DB::beginTransaction();
-            //         Category::create([
-            //             'name' => $source_array[$index],
-            //             'slug' => Str::slug($source_array[$index]),
-            //         ]);
-            //         DB::commit();
-            //     }
-            // } catch (\Throwable $th) {
-            //     DB::rollBack();
-            //     throw $th;
-            //     $this->info("\nsomething went wrong when inserting category...");
-            //     return "something went wrong on creating category.";
-            // }
-
             $bar1->advance();
         }
         $bar1->finish();
-        $this->info("\ncrawl sitemap.xml success...");
+        $this->info("\nCrawl sitemap.xml success...");
 
-        $this->info('crawling news detail and inserting to database start...');
+        $this->info('Crawling news detail and inserting/updating to database start...');
         $bar2 = $this->output->createProgressBar(count($results));
         $bar2->start();
         $countInsert = 0;
-        foreach ($results as $index => $result) {
+        foreach ($results as $result) {
             $countInsert++;
 
-            if ($result->source == "Detik") $page = $client->request('GET', $result->url . '?single=1');
-            if ($result->source == "Viva") $page = $client->request('GET', $result->url . '?page=all');
-            if ($result->source == "Kompas") $page = $client->request('GET', $result->url . '?page=all');
-            // if ($result->source == "Merdeka.com") $page = $client->request('GET', $result->url);
+            try {
+                // Use Guzzle to fetch the article page
+                if ($result->source == "Detik") {
+                    $response = $client->request('GET', $result->url . '?single=1', [
+                        'verify' => false,
+                    ]);
+                }
+                if ($result->source == "Viva") {
+                    $response = $client->request('GET', $result->url . '?page=all', [
+                        'verify' => false,
+                    ]);
+                }
+                if ($result->source == "Kompas") {
+                    $response = $client->request('GET', $result->url . '?page=all', [
+                        'verify' => false,
+                    ]);
+                }
+                $html = $response->getBody()->getContents();
+                // Create a new DomCrawler instance with the HTML content
+                $crawler = new Crawler($html);
+            } catch (\Throwable $th) {
+                $this->info("\nRequest failed on #$countInsert: $result->url; error: $th");
+                continue;
+            }
 
-            // crawl author
+            // Crawl author
+            $author = null;
             if ($result->source == "Detik") {
                 try {
-                    $author =  count(explode('-', $page->filter('.detail__author')->text())) > 0 ? explode('-', $page->filter('.detail__author')->text())[0] :  null;
+                    $authorText = $crawler->filter('.detail__author')->text();
+                    $parts = explode('-', $authorText);
+                    $author = count($parts) > 0 ? trim($parts[0]) : null;
                 } catch (\Throwable $th) {
                     $author = null;
                 }
             }
             if ($result->source == "Viva") {
                 try {
-                    $author = $page->filter('.main-content-author ul')->text();
+                    $author = $crawler->filter('.main-content-author ul')->text();
                 } catch (\Throwable $th) {
                     $author = null;
                 }
             }
             if ($result->source == "Kompas") {
                 try {
-                    $author = $page->filter('.read__credit__item')->text();
+                    $author = $crawler->filter('.read__credit__item')->text();
                 } catch (\Throwable $th) {
                     $author = null;
                 }
             }
-            // if ($result->source == "Merdeka.com") {
-            //     try {
-            //         echo $page->filter('.reporter a')->text();
-            //     } catch (\Throwable $th) {
-            //         echo "empty";
-            //     }
-            // }
 
-            // crawl image
+            // Crawl image using conditional selectors
+            $img = null;
             if ($result->source == "Detik") {
                 try {
-                    $img = $page->filter('.detail__media-image img')->eq(0)->extract(['src', 'alt']);
+                    $img = $crawler->filter('.detail__media-image img')->eq(0)->extract(['src', 'alt']);
                 } catch (\Throwable $th) {
                     $img = null;
                 }
             }
             if ($result->source == "Viva") {
                 try {
-                    $img = $page->filter('.main-content-image .mci-frame img')->eq(0)->extract(['src', 'alt']);
+                    $img = $crawler->filter('.main-content-image .mci-frame img')->eq(0)->extract(['src', 'alt']);
                 } catch (\Throwable $th) {
                     $img = null;
                 }
             }
             if ($result->source == "Kompas") {
                 try {
-                    $img = $page->filter('.photo__wrap img')->eq(0)->extract(['src', 'alt']);
+                    // Check for .photo__wrap first; if not found, fallback to .photo
+                    if ($crawler->filter('.photo__wrap img')->count() > 0) {
+                        $img = $crawler->filter('.photo__wrap img')->eq(0)->extract(['src', 'alt']);
+                    } elseif ($crawler->filter('.photo img')->count() > 0) {
+                        $img = $crawler->filter('.photo img')->eq(0)->extract(['src', 'alt']);
+                    } else {
+                        $img = null;
+                    }
                 } catch (\Throwable $th) {
                     $img = null;
                 }
             }
-            // if ($result->source == "Merdeka.com") {
-            //     try {
-            //         print_r($page->filter('.mdk-dt-img img')->eq(0)->extract(['src', 'alt']));
-            //     } catch (\Throwable $th) {
-            //         //throw $th;
-            //         echo "img empty";
-            //     }
-            // }
 
-            // crawl body
+            // Crawl body
             $body = [];
             if ($result->source == "Detik") {
-                $body[] = $page->filter('.detail__body-text')->each(function ($item) {
-                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $item->html());
+                $body = $crawler->filter('.detail__body-text')->each(function ($node) {
+                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $node->html());
                 });
             }
             if ($result->source == "Viva") {
-                $body[] = $page->filter('.main-content-detail')->each(function ($item) use($result){
-                    $src = $item->filter('img')->extract(['data-original']);
-                    $item->filter('img')->each(function ($img, $i) use ($src) {
+                $body = $crawler->filter('.main-content-detail')->each(function ($node) {
+                    $src = $node->filter('img')->extract(['data-original']);
+                    $node->filter('img')->each(function ($img, $i) use ($src) {
                         try {
-                            $img->getNode(0)->setAttribute('src', $src[$i]);
+                            $img->getNode(0)->setAttribute('src', $src[$i] ?? '');
                         } catch (\Throwable $th) {
-                            //throw $th;
+                            // Ignore error
                         }
                     });
-                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $item->html());
+                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $node->html());
                 });
             }
             if ($result->source == "Kompas") {
-                $body[] = $page->filter('.read__content')->each(function ($item) {
-                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $item->html());
+                $body = $crawler->filter('.read__content')->each(function ($node) {
+                    return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $node->html());
                 });
             }
-            // if($result->source == "Merdeka.com"){
-            //     $page->filter('.mdk-body-paragraph')->each(function ($item) {
-            //         echo $item->html();
-            //         echo "<br>";
-            //     });
-            // }
 
             try {
                 $newsScrapeExists = News::where([
                     ['title', trim(News::generateExcerpt($result->title, 200))],
                     ['slug', Str::slug($result->title)],
-                ])->exists();
+                ])->first();
 
+                DB::beginTransaction();
                 if (!$newsScrapeExists) {
-                    DB::beginTransaction();
-                    $news = News::create([
+                    $newsEntry = News::create([
                         'category_id' => Category::where('name', 'Kesehatan')->first()->id,
                         'category_crawl' => 'Kesehatan',
-                        'is_crawl' => true,
+                        'is_crawl' => 'true',
                         'author_crawl' => trim($author),
                         'source_crawl' => trim($result->source),
                         'title' => News::generateExcerpt($result->title, 200),
                         'slug' => (new News())->uniqueSlug($result->title),
                         'image' => $img ? trim($img[0][0]) : null,
                         'image_description' => $img ? trim($img[0][1]) : null,
-                        // 'excerpt' => Str::limit(strip_tags(trim($body[0][0])), 200),
-                        'excerpt' => News::generateExcerpt($body[0][0], 200),
-                        'is_highlight' => true,
-                        'publish_status' => true,
-                        'comment_status' => true,
+                        'excerpt' => News::generateExcerpt($body[0] ?? '', 200),
+                        'is_highlight' => 'true',
+                        'publish_status' => 'true',
+                        'comment_status' => 'true',
                         'published_at' => Carbon::parse($result->date)->format('Y-m-d H:i:s'),
                     ]);
-                    $news->body = trim($body[0][0]);
-                    $news->save();
-                    DB::commit();
+                    $newsEntry->body = trim($body[0] ?? '');
+                    $newsEntry->save();
+                } else {
+                    $newsScrapeExists->update([
+                        'category_id' => Category::where('name', 'Kesehatan')->first()->id,
+                        'category_crawl' => 'Kesehatan',
+                        'is_crawl' => 'true',
+                        'author_crawl' => trim($author),
+                        'source_crawl' => trim($result->source),
+                        'title' => News::generateExcerpt($result->title, 200),
+                        'slug' => (new News())->uniqueSlug($result->title),
+                        'image' => $img ? trim($img[0][0]) : null,
+                        'image_description' => $img ? trim($img[0][1]) : null,
+                        'excerpt' => News::generateExcerpt($body[0] ?? '', 200),
+                        'is_highlight' => 'true',
+                        'publish_status' => 'true',
+                        'comment_status' => 'true',
+                        'published_at' => Carbon::parse($result->date)->format('Y-m-d H:i:s'),
+                    ]);
+                    $newsScrapeExists->body = trim($body[0] ?? '');
+                    $newsScrapeExists->save();
                 }
+                DB::commit();
             } catch (\Throwable $th) {
                 DB::rollBack();
-                // throw $th;
-                $this->info("\n crawling news detail and inserting fail on ". $countInsert);
-                // return 'gagal insert di percobaan ' . $countInsert;
+                $this->info("\nCrawling news detail and inserting failed on #$countInsert");
+                continue;
             }
             $bar2->advance();
         }
         $bar2->finish();
-        $this->info("\n crawling news detail and inserting to database success...");
+        $this->info("\nCrawling news detail and inserting/updating to database success...");
         return 1;
     }
 }

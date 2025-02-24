@@ -86,6 +86,8 @@ class News extends Model
         return $query->where('is_crawl', $status);
     }
 
+    public function scopePublish($query) { return $query->whereRaw('"publish_status" = true'); }
+
     public static function generateExcerpt(string $string, $limit = 200):string
     {
         return trim(Str::limit(preg_replace("/(&nbsp;|&amp;|amp;lt;i|amp;gt;|amp;lt;\/i|amp;|ampamp;|#039;|&lt;i&gt;|&lt;\/i&gt;|&lt;|&gt;|\'|&quot;|lt;i|gt;|lt;\/i|lt;I|\\|\/|\s{2,}|:|lt;)/", ' ', strip_tags($string))        , $limit));
